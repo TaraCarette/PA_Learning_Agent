@@ -1,0 +1,39 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Controller : MonoBehaviour
+{
+    public float speed; 
+    public float rotationSpeed;
+    Rigidbody2D rgbd;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        rgbd = GetComponent<Rigidbody2D>();
+        // speed = 1f;
+        // rotationSpeed = 50f;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            rgbd.transform.Translate(new Vector3(0, speed, 0) * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            rgbd.transform.Translate(new Vector3(0, -speed, 0) * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            rgbd.transform.Rotate(new Vector3(0, 0, rotationSpeed) * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            rgbd.transform.Rotate(new Vector3(0, 0, -rotationSpeed) * Time.deltaTime);
+        }
+    }
+}

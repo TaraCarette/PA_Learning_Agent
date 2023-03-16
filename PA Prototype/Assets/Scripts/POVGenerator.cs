@@ -5,19 +5,21 @@ using UnityEngine.UI;
 
 public class POVGenerator : MonoBehaviour
 {
-    public GameObject eye;
+    public GameObject eye; // give it the eye you want the POV of
     public GameObject canvas;
-    public Sprite testSprite;
 
+    // give it the location you want the POV bar to appear
+    // will be relative to the center of the screen
     public float xPOVLocation;
     public float yPOVLocation;
 
+    // the size of the POV bar
     public float xPOVSize;
     public float yPOVSize;
 
+
     private FieldOfView eyeScript;
-    private float pixelWidth;
-    private float pixelHeight;
+    private List <Image> imgPixels;
 
     // Start is called before the first frame update
     void Start()
@@ -28,8 +30,8 @@ public class POVGenerator : MonoBehaviour
 
         // calculate the size of the pixels representing
         // the info from each raycast
-        pixelWidth = xPOVSize / rays;
-        pixelHeight = yPOVSize - 8;
+        float pixelWidth = xPOVSize / rays;
+        float pixelHeight = yPOVSize - 8;
 
 
 
@@ -46,11 +48,11 @@ public class POVGenerator : MonoBehaviour
         image.color = Color.blue; // might change this to something more specific to look good
 
 
-
+        // creating objects and images for each pixel
         GameObject imgView;
         RectTransform transLoop;
-        Image imageLoop;
         float posX;
+        imgPixels = new List<Image>(); // initialize empty list
         for (int i = 1; i <= rays; i++) 
         {
             // creating object to hold information of one ray
@@ -62,18 +64,17 @@ public class POVGenerator : MonoBehaviour
             transLoop.localScale = Vector3.one;
 
             // setting size of pixel
-            transLoop.sizeDelta= new Vector2(pixelWidth, pixelHeight); // custom size
+            transLoop.sizeDelta = new Vector2(pixelWidth, pixelHeight); // custom size
 
             // positioning the pixel on the POV bar
             posX = (-xPOVSize / 2) + (i * pixelWidth) - (pixelWidth / 2);
             transLoop.anchoredPosition = new Vector2(posX, 0f); // setting position, will be on center
 
             // creating actual image which will hold the visual information for the pixel
-            imageLoop = imgView.AddComponent<Image>();
-            imageLoop.raycastTarget = false; // ensure this image won't trigger the raycast
+            imgPixels.Add(imgView.AddComponent<Image>());
 
-            // colour chosen will be dependent on what the raycast sees
-            imageLoop.color = Color.red;
+            // start colour should match bar colour
+            imgPixels[i - 1].color = Color.red;
         }
     }
 

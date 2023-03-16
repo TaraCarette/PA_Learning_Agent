@@ -10,7 +10,9 @@ public class FieldOfView : MonoBehaviour
     public float viewAngle;
     public float rayPer10Degree;
 
-    private int rays;
+    [HideInInspector]
+    public int rays;
+
     private float degreeBetween;
     private float sideView;
 

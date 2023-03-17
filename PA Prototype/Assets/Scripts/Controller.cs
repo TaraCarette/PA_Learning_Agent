@@ -33,5 +33,13 @@ public class Controller : MonoBehaviour
         {
             rgbd.transform.Rotate(new Vector3(0, 0, -rotationSpeed) * Time.deltaTime);
         }
+        if (Input.GetKey(KeyCode.A))
+        {
+            rgbd.transform.Translate(new Vector3(-speed, 0, 0) * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            rgbd.transform.Translate(new Vector3(speed, 0, 0) * Time.deltaTime);
+        }
     }
 }

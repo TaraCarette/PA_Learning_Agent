@@ -30,6 +30,7 @@ public class POVGenerator : MonoBehaviour
     private float distBinSize;
     private float transBinSize;
     private float transValue;
+    private IDictionary<string, float[]> colourDict;
 
 
     // Start is called before the first frame update
@@ -45,7 +46,6 @@ public class POVGenerator : MonoBehaviour
         float pixelHeight = yPOVSize - 8;
 
 
-
         // set the colour for the POV bar when it sees nothing
         defaultColour = Color.white;
 
@@ -53,6 +53,20 @@ public class POVGenerator : MonoBehaviour
         // transparency value if divided into a set number of bins
         distBinSize = eyeScript.viewRadius / distanceBins;
         transBinSize = (1 - minTransparencyValue) / distanceBins;
+
+        // set up the possible colours to be found on scene and store the correct values
+        colourDict = new Dictionary<string, float[]>();
+        colourDict.Add("red", new float[] {1, 0, 0});
+        colourDict.Add("green", new float[] {0, 1, 0});
+        colourDict.Add("blue", new float[] {0, 0, 1});
+        colourDict.Add("yellow", new float[] {1, 1, 0});
+        colourDict.Add("pink", new float[] {1, 0, 1});
+        colourDict.Add("cyan", new float[] {0, 1, 1});
+        colourDict.Add("white", new float[] {1, 1, 1});
+        colourDict.Add("black", new float[] {0, 0, 0});
+        colourDict.Add("brown", new float[] {0.65f, 0.4f, 0.16f});
+        colourDict.Add("purple", new float[] {0.6f, 0.2f, 0.7f});
+
 
 
         // create the POV bar that will hold all the pixels
@@ -119,7 +133,21 @@ public class POVGenerator : MonoBehaviour
                     }
                 }
 
-                imgPixels[rays - 1 - i].color = new Color(1, 0, 0, transValue);
+                // find the colour based on tag
+                // and assign colour and transparency to relevant pixel
+                foreach(KeyValuePair<string, float[]> entry in colourDict)
+                {
+                    if (eyeScript.hits[i].transform.tag == entry.Key)
+                    {
+                        imgPixels[rays - 1 - i].color = new Color(entry.Value[0], entry.Value[1], entry.Value[2], transValue);
+                        break;
+                    } else 
+                    {
+                        // default to black if no tagged colour
+                        imgPixels[rays - 1 - i].color = new Color(0, 0, 0, transValue);
+                    }
+                }
+
 
             } else {
                 imgPixels[rays - 1 - i].color = defaultColour;

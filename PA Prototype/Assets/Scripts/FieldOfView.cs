@@ -11,8 +11,9 @@ public class FieldOfView : MonoBehaviour
     public float rayPer10Degree;
 
     [HideInInspector]
-    public int rays;
+    public RaycastHit2D[] hits;
 
+    private int rays;
     private float degreeBetween;
     private float sideView;
 
@@ -22,6 +23,9 @@ public class FieldOfView : MonoBehaviour
         rays = (int) ((viewAngle / 10) * rayPer10Degree) + 1;
         degreeBetween = 10 / rayPer10Degree;
         sideView = viewAngle / 2;
+
+        // initialize the list storing the raycast hit data in
+        hits = new RaycastHit2D[rays];
     }
 
 
@@ -30,9 +34,6 @@ public class FieldOfView : MonoBehaviour
     {
         // calculate what the forwards vector is given rotation of the eye
         Vector3 forward = transform.TransformDirection(Vector3.up);
-
-        // Get the first object hit by the ray
-        RaycastHit2D[] hits = new RaycastHit2D[rays];
 
         float angleInDegrees;
         float angleInRadians;
@@ -52,17 +53,6 @@ public class FieldOfView : MonoBehaviour
             hits[i] = Physics2D.Raycast(transform.position, Vector3.Normalize(expanded), viewRadius);
 
         }
-
-
-        // an array to store the hit data of each ray
-
-        //If the collider of the object hit is not NUll
-        if (hits[0].collider != null)
-        {
-            //Hit something, print the tag of the object
-            Debug.Log("Hitting: " + hits[0].collider.tag);
-        }
-
 
 
     }

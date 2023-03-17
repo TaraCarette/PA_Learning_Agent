@@ -12,8 +12,6 @@ public class Controller : MonoBehaviour
     void Start()
     {
         rgbd = GetComponent<Rigidbody2D>();
-        // speed = 1f;
-        // rotationSpeed = 50f;
     }
 
     // Update is called once per frame

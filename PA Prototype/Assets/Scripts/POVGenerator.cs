@@ -20,13 +20,18 @@ public class POVGenerator : MonoBehaviour
 
     private FieldOfView eyeScript;
     private List <Image> imgPixels;
+    private int rays;
+    private Color defaultColour;
 
     // Start is called before the first frame update
     void Start()
     {
+        // set the colour for the POV bar when it sees nothing
+        defaultColour = Color.blue;
+
         // extract the number of rays from the variables of the eye
         eyeScript = eye.GetComponent<FieldOfView>();
-        int rays = (int) ((eyeScript.viewAngle / 10) * eyeScript.rayPer10Degree) + 1;
+        rays = (int) ((eyeScript.viewAngle / 10) * eyeScript.rayPer10Degree) + 1;
 
         // calculate the size of the pixels representing
         // the info from each raycast
@@ -74,14 +79,23 @@ public class POVGenerator : MonoBehaviour
             imgPixels.Add(imgView.AddComponent<Image>());
 
             // start colour should match bar colour
-            imgPixels[i - 1].color = Color.red;
+            imgPixels[i - 1].color = defaultColour;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Debug.Log(eyeScript.rays);
-        
+        // access results of raycasts from eye in order to update the 
+        // POV bar with
+        for (int i = 0; i < rays; i++) 
+        {
+            if (eyeScript.hits[i].collider != null)
+            {
+                imgPixels[rays - 1 - i].color = Color.green;
+            } else {
+                imgPixels[rays - 1 - i].color = defaultColour;
+            }
+        }
     }
 }

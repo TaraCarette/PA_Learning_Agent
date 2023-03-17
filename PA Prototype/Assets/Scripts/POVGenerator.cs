@@ -17,18 +17,24 @@ public class POVGenerator : MonoBehaviour
     public float xPOVSize;
     public float yPOVSize;
 
+    public float minTransparencyValue;
+
+    [Tooltip("The number of different transparencies to represent distance from the agent")]
+    public int distanceBins;
+
 
     private FieldOfView eyeScript;
     private List <Image> imgPixels;
     private int rays;
     private Color defaultColour;
+    private float distBinSize;
+    private float transBinSize;
+    private float transValue;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        // set the colour for the POV bar when it sees nothing
-        defaultColour = Color.blue;
-
         // extract the number of rays from the variables of the eye
         eyeScript = eye.GetComponent<FieldOfView>();
         rays = (int) ((eyeScript.viewAngle / 10) * eyeScript.rayPer10Degree) + 1;
@@ -38,6 +44,15 @@ public class POVGenerator : MonoBehaviour
         float pixelWidth = xPOVSize / rays;
         float pixelHeight = yPOVSize - 8;
 
+
+
+        // set the colour for the POV bar when it sees nothing
+        defaultColour = Color.white;
+
+        // calculate the size of the distance along the raycast and the corresponding
+        // transparency value if divided into a set number of bins
+        distBinSize = eyeScript.viewRadius / distanceBins;
+        transBinSize = (1 - minTransparencyValue) / distanceBins;
 
 
         // create the POV bar that will hold all the pixels
@@ -50,7 +65,7 @@ public class POVGenerator : MonoBehaviour
 
         Image image = imgObject.AddComponent<Image>();
         image.raycastTarget = false; // ensure this image won't trigger the raycast
-        image.color = Color.blue; // might change this to something more specific to look good
+        image.color = defaultColour; // might change this to something more specific to look good
 
 
         // creating objects and images for each pixel
@@ -87,12 +102,25 @@ public class POVGenerator : MonoBehaviour
     void Update()
     {
         // access results of raycasts from eye in order to update the 
-        // POV bar with
+        // POV bar with correct colour and transparency
         for (int i = 0; i < rays; i++) 
         {
             if (eyeScript.hits[i].collider != null)
             {
-                imgPixels[rays - 1 - i].color = Color.green;
+                // find the bin the distance belongs in, and then assign it the corresponding trans value
+                for (float j = distBinSize; j <= eyeScript.viewRadius; j += distBinSize) 
+                {
+                    if (eyeScript.hits[i].distance <= j) 
+                    {
+                        // converting the bin sized j value into a counter
+                        // then the further the bin the lower the transparency value
+                        transValue = (transBinSize * (distanceBins - (j / distBinSize))) + minTransparencyValue;
+                        break;
+                    }
+                }
+
+                imgPixels[rays - 1 - i].color = new Color(1, 0, 0, transValue);
+
             } else {
                 imgPixels[rays - 1 - i].color = defaultColour;
             }

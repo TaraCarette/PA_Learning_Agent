@@ -161,6 +161,8 @@ MonoBehaviour:
   yPOVLocation: -150
   xPOVSize: 200
   yPOVSize: 25
+  minTransparencyValue: 0.1
+  distanceBins: 10
 --- !u!114 &289551068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -565,7 +567,6 @@ MonoBehaviour:
   viewRadius: 5
   viewAngle: 80
   rayPer10Degree: 1
-  rays: 0
 --- !u!1 &1400439293
 GameObject:
   m_ObjectHideFlags: 0
@@ -641,6 +642,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7473241341447349944, guid: 8b835ed49f93a3540b1267743848bfa6, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7473241341447349945, guid: 8b835ed49f93a3540b1267743848bfa6, type: 3}
       propertyPath: m_RootOrder
       value: 1

@@ -66,6 +66,7 @@ public class POVGenerator : MonoBehaviour
         colourDict.Add("black", new float[] {0, 0, 0});
         colourDict.Add("brown", new float[] {0.65f, 0.4f, 0.16f});
         colourDict.Add("purple", new float[] {0.6f, 0.2f, 0.7f});
+        colourDict.Add("orange", new float[] {1f, 0.5f, 0.1f});
 
 
 

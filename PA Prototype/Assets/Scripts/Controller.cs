@@ -8,10 +8,18 @@ public class Controller : MonoBehaviour
     public float rotationSpeed;
     Rigidbody2D rgbd;
 
+    [HideInInspector]
+    public float currSpeed;
+
+    private Vector3 prevLocation;
+
     // Start is called before the first frame update
     void Start()
     {
         rgbd = GetComponent<Rigidbody2D>();
+        prevLocation = rgbd.transform.position;
+        currSpeed = 0;
+
     }
 
     // Update is called once per frame
@@ -41,5 +49,8 @@ public class Controller : MonoBehaviour
         {
             rgbd.transform.Translate(new Vector3(speed, 0, 0) * Time.deltaTime);
         }
+
+        currSpeed = Vector3.Distance(rgbd.transform.position, prevLocation);
+        prevLocation = rgbd.transform.position;
     }
 }

@@ -24,7 +24,6 @@ public class StickyAgent : MonoBehaviour
         // and update relationship to any other objects already touching as needed
         if (Input.GetKeyDown(KeyCode.S))
         {
-            Debug.Log("Changed sticky status");
             stickyOn = !stickyOn;
 
             if (stickyOn)
@@ -43,6 +42,9 @@ public class StickyAgent : MonoBehaviour
                 {
                     obj.parent = null;
                 }
+                // removing from list as will newly collide once no
+                // longer a child of the agent
+                touchingObj = new List<Transform>();
             }
         }
 
@@ -61,19 +63,16 @@ public class StickyAgent : MonoBehaviour
             // update list of objects agent is touching and index
             Transform copyOther = other.transform;
             touchingObj.Add(copyOther);
-
-
-            Debug.Log("current list");
-            foreach (Transform obj in touchingObj)
-            {
-                Debug.Log(obj);
-            }
         }
 
     }
 
     void OnCollisionExit2D(Collision2D other)
     {
-        touchingObj.Remove(other.transform);
+        // when sticky and touching, no collision as same body
+        // but still want to keep track of object
+        if (!stickyOn) {
+            touchingObj.Remove(other.transform);
+        }
     }
 }

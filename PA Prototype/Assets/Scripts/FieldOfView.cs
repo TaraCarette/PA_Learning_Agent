@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class FieldOfView : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class FieldOfView : MonoBehaviour
     private float degreeBetween;
     private float sideView;
 
+    private float eyeRadius;
+
     void Start()
     {
         // calculate how many rays needs given field of view and density or rays
@@ -26,6 +29,8 @@ public class FieldOfView : MonoBehaviour
 
         // initialize the list storing the raycast hit data in
         hits = new RaycastHit2D[rays];
+
+        eyeRadius = transform.localScale.x / 2;
     }
 
 
@@ -33,7 +38,8 @@ public class FieldOfView : MonoBehaviour
     void FixedUpdate()
     {
         // calculate what the forwards vector is given rotation of the eye
-        Vector3 forward = transform.TransformDirection(Vector3.up);
+        // also make it the size of the eye radius so it can start just outside the eye
+        Vector3 forward = transform.TransformDirection(Vector3.up) * eyeRadius;
 
         float angleInDegrees;
         float angleInRadians;
@@ -47,10 +53,10 @@ public class FieldOfView : MonoBehaviour
                 -forward[0] * Mathf.Sin(angleInRadians) + forward[1] * Mathf.Cos(angleInRadians), 0);
 
             // draw the new ray
-            Debug.DrawRay(transform.position, Vector3.Normalize(expanded) * viewRadius, Color.green);
+            Debug.DrawRay(transform.position + forward, Vector3.Normalize(expanded) * viewRadius, Color.green);
 
             // create the new ray and store the result
-            hits[i] = Physics2D.Raycast(transform.position, Vector3.Normalize(expanded), viewRadius);
+            hits[i] = Physics2D.Raycast(transform.position + forward, Vector3.Normalize(expanded), viewRadius);
 
         }
 

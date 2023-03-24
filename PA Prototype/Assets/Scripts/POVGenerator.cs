@@ -138,7 +138,7 @@ public class POVGenerator : MonoBehaviour
                 // and assign colour and transparency to relevant pixel
                 foreach(KeyValuePair<string, float[]> entry in colourDict)
                 {
-                    if (eyeScript.hits[i].transform.tag == entry.Key)
+                    if (eyeScript.hits[i].collider.transform.tag == entry.Key)
                     {
                         imgPixels[rays - 1 - i].color = new Color(entry.Value[0], entry.Value[1], entry.Value[2], transValue);
                         break;

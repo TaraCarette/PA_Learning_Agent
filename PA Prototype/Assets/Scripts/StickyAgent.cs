@@ -8,12 +8,14 @@ public class StickyAgent : MonoBehaviour
     private bool touching;
     private List<Transform> touchingObj;
     SpriteRenderer sr;
+    private Color currColour;
 
     // Start is called before the first frame update
     void Start()
     {
         stickyOn = false;
         sr = GetComponent<SpriteRenderer>();
+        currColour = sr.color;
         touchingObj = new List<Transform>();
     }
 
@@ -36,7 +38,8 @@ public class StickyAgent : MonoBehaviour
                 }
             } else 
             {
-                sr.color = new Color32(0xCF, 0x4E, 0x20, 0xFF);
+                // sr.color = new Color32(0xCF, 0x4E, 0x20, 0xFF);
+                sr.color = currColour;
                 // the touching objects should no longer be children
                 foreach (Transform obj in touchingObj)
                 {

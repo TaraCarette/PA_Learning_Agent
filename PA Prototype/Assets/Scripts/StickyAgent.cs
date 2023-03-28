@@ -6,9 +6,11 @@ public class StickyAgent : MonoBehaviour
 {
     private bool stickyOn;
     private bool touching;
-    private List<Transform> touchingObj;
     SpriteRenderer sr;
     private Color currColour;
+
+    [HideInInspector]
+    public List<Transform> touchingObj;
 
     // Start is called before the first frame update
     void Start()
@@ -34,16 +36,20 @@ public class StickyAgent : MonoBehaviour
                 // any touching objects should become child so moves together
                 foreach (Transform obj in touchingObj)
                 {
-                    obj.parent = transform;
+                    if (obj != null) {
+                        obj.parent = transform;
+                    }
                 }
             } else 
             {
-                // sr.color = new Color32(0xCF, 0x4E, 0x20, 0xFF);
                 sr.color = currColour;
                 // the touching objects should no longer be children
                 foreach (Transform obj in touchingObj)
                 {
-                    obj.parent = null;
+                    // if deleted in other script will leave null behind
+                    if (obj != null) {
+                        obj.parent = null;
+                    }
                 }
                 // removing from list as will newly collide once no
                 // longer a child of the agent

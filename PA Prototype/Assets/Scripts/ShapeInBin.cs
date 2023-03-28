@@ -5,8 +5,10 @@ using UnityEngine;
 public class ShapeInBin : MonoBehaviour
 {
     public GameObject receivedObject;
+    public GameObject stickyObject;
 
-    private Vector3 goalBase;
+    private List<Transform> touchingObj;
+
     private Vector3 side1;
     private Vector3 side2;
 
@@ -16,25 +18,18 @@ public class ShapeInBin : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        goalBase = transform.GetChild(0).position;
-        // // Transform s1 = transform.GetChild(1);
-        // // Transform s2 = transform.GetChild(2);
-        // // side1 = s1.parent.TransformPosition(s1.localPosition);
-        // // side2 = s2.parent.TransformPosition(s2.localPosition);
-        // // transform.GetChild(1).position;
+        // get the list of objects that are touchy the sticky agent so can delete object safely
+        touchingObj = stickyObject.GetComponent<StickyAgent>().touchingObj;
+
+        // get the sides so can tell orientation of box
         side1 = transform.GetChild(1).position;
         side2 = transform.GetChild(2).position;
-        // Debug.Log(transform.GetChild(1).localScale);
-        // Debug.Log(side1);
-        // Debug.Log(side2);
 
-
-        // issue is depending on how flipped gonna be different
-
+        // get information about size of box we want detected
         Vector3 pos = transform.position;
         Vector3 scale = transform.localScale;
 
-        // if (goalBase[0] > side1)
+        // variables we need to draw detection rect
         float topX;
         float topY;
         float xLength;
@@ -77,6 +72,8 @@ public class ShapeInBin : MonoBehaviour
             // if object has been moved inside the goal container, destory it
             if (rect.Contains(receivedPosition))
             {
+                // remove it from list of objects stuck to agent
+                touchingObj.Remove(receivedObject.transform);
                 Destroy(receivedObject);
             }
         }

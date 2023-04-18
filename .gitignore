@@ -1,0 +1,7 @@
+env/*
+
+
+# mlagents specifc
+results/
+# temp thing put on git once figure out env
+file.txt

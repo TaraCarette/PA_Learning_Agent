@@ -21,13 +21,36 @@ public class ShapeInBin : MonoBehaviour
         // get the list of objects that are touchy the sticky agent so can delete object safely
         touchingObj = stickyObject.GetComponent<StickyAgent>().touchingObj;
 
+
+        // the rectange will be slightly in the box, forcing the agent to properly shove whole thing in
+        rect = drawBinRect(transform);
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        if (receivedObject != null)
+        {
+            receivedPosition = receivedObject.transform.position;
+            // if object has been moved inside the goal container, destory it
+            if (rect.Contains(receivedPosition))
+            {
+                // remove it from list of objects stuck to agent
+                touchingObj.Remove(receivedObject.transform);
+                Destroy(receivedObject);
+            }
+        }
+    }
+
+    public Rect drawBinRect(Transform goalBoxTransform)
+    {
         // get the sides so can tell orientation of box
-        side1 = transform.GetChild(1).position;
-        side2 = transform.GetChild(2).position;
+        side1 = goalBoxTransform.GetChild(1).position;
+        side2 = goalBoxTransform.GetChild(2).position;
 
         // get information about size of box we want detected
-        Vector3 pos = transform.position;
-        Vector3 scale = transform.localScale;
+        Vector3 pos = goalBoxTransform.position;
+        Vector3 scale = goalBoxTransform.localScale;
 
         // variables we need to draw detection rect
         float topX;
@@ -60,23 +83,8 @@ public class ShapeInBin : MonoBehaviour
         }
 
         // the rectange will be slightly in the box, forcing the agent to properly shove whole thing in
-        rect = new Rect(topX, topY, xLength, yLength);  
-    }
+        Rect newRect = new Rect(topX, topY, xLength, yLength); 
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        if (receivedObject != null)
-        {
-            receivedPosition = receivedObject.transform.position;
-            // if object has been moved inside the goal container, destory it
-            if (rect.Contains(receivedPosition))
-            {
-                // remove it from list of objects stuck to agent
-                touchingObj.Remove(receivedObject.transform);
-                Destroy(receivedObject);
-            }
-        }
-
-    }
+        return newRect;
+    } 
 }

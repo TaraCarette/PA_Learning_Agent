@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 8377110629241309720}
   - component: {fileID: 6885332723475517180}
   - component: {fileID: 6885332723475517179}
+  - component: {fileID: 1452687103}
+  - component: {fileID: 1452687104}
+  - component: {fileID: 1452687105}
   m_Layer: 0
   m_Name: Agent
   m_TagString: Untagged
@@ -73,6 +76,69 @@ MonoBehaviour:
   speed: 1.5
   rotationSpeed: 50
   currSpeed: 0
+--- !u!114 &1452687103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2729735969358740954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    VectorObservationSize: 52
+    NumStackedVectorObservations: 1
+    m_ActionSpec:
+      m_NumContinuousActions: 0
+      BranchSizes: 0400000002000000
+    VectorActionSize: 0400000002000000
+    VectorActionDescriptions: []
+    VectorActionSpaceType: 0
+    hasUpgradedBrainParametersWithActionSpec: 1
+  m_Model: {fileID: 0}
+  m_InferenceDevice: 3
+  m_BehaviorType: 0
+  m_BehaviorName: ColourNormRandomized
+  TeamId: 0
+  m_UseChildSensors: 1
+  m_UseChildActuators: 1
+  m_ObservableAttributeHandling: 0
+--- !u!114 &1452687104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2729735969358740954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 5
+  TakeActionsBetweenDecisions: 1
+--- !u!114 &1452687105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2729735969358740954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11e46c96b19d04b4b9cc20c278fc8b8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 0
+  bin: {fileID: 0}
+  eye: {fileID: 6885332723527397842}
+  maxSpeed: 0.045
 --- !u!1 &6885332723037555042
 GameObject:
   m_ObjectHideFlags: 0
@@ -292,6 +358,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Arm
       objectReference: {fileID: 0}
+    - target: {fileID: 8444727528561225329, guid: 6d3614b7699155c45af80692247d2291, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8444727528561225342, guid: 6d3614b7699155c45af80692247d2291, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -482,6 +552,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c57d76acb8be124e825ee710ec852f0, type: 3}
+--- !u!1 &6885332723527397842 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2315788924331129550, guid: 0c57d76acb8be124e825ee710ec852f0, type: 3}
+  m_PrefabInstance: {fileID: 9200511403871652636}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6885332723527397843 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2315788924331129551, guid: 0c57d76acb8be124e825ee710ec852f0, type: 3}

@@ -15,6 +15,7 @@ TagManager:
   - white
   - pink
   - cyan
+  - eye
   layers:
   - Default
   - TransparentFX

@@ -7,28 +7,45 @@ using Unity.MLAgents.Sensors;
 
 public class PAAgent : Agent
 {
+    // bin and rect temporary while goal is to move agent into bin instead of actual goal
     public GameObject bin;
-    public GameObject eye; // give it the eye you want the POV of
+    private Rect goalRect;
 
     [Tooltip("Found experimentally, not sure how to calculate normally")]
     public float maxSpeed;
 
     private Vector3 startingSpot;
 
-    private Rect goalRect;
-    private FieldOfView eyeScript;
-    private int rays;
+    private List <FieldOfView> eyeScripts;
+    private List <int> rays;
+
 
     public override void Initialize()
     {
-        // might be best to move goal bin stuff over here as well since redoing
+        // temporary drawing bin to reacts to agent as need dummy task
         goalRect = bin.GetComponent<ShapeInBin>().drawBinRect(bin.transform);
 
+
+        // save starting spot so can randmize based around it as new episode begins
         startingSpot = transform.localPosition;
 
-        // assuming 1 eye, may later generalize
-        eyeScript = eye.GetComponent<FieldOfView>();
-        rays = (int) ((eyeScript.viewAngle / 10) * eyeScript.rayPer10Degree) + 1;
+        // initiailize empty lists
+        eyeScripts = new List<FieldOfView>(); 
+        rays = new List<int>(); 
+        // finding all eyes attached to agent and the number of rays to go
+        // with each eye
+        int eyeCount = 0;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            GameObject child = transform.GetChild(i).gameObject;
+            // if is an eye and active then add to list to be processed
+            if (child.transform.tag == "eye" & child.activeInHierarchy)
+            {
+                eyeScripts.Add(child.GetComponent<FieldOfView>());
+                rays.Add((int) ((eyeScripts[eyeCount].viewAngle / 10) * eyeScripts[eyeCount].rayPer10Degree) + 1);
+                eyeCount++;
+            }
+        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -37,30 +54,34 @@ public class PAAgent : Agent
         // currently just did experiemntally, will want to calculate more formally for normalization
         sensor.AddObservation(GetComponent<Controller>().currSpeed / maxSpeed);
 
-        // the information from the raycasts -currently assuming 1 eye
-        for (int i = 0; i < rays; i++) 
+        // the information from the raycasts is observed
+        for (int e = 0; e < eyeScripts.Count; e++)
         {
-            if (eyeScript.hits[i].collider != null)
+            for (int i = 0; i < rays[e]; i++) 
             {
-                // add normalized distance
-                sensor.AddObservation(eyeScript.hits[i].distance / eyeScript.viewRadius);
-                // add colour being perceived
-                // colour will be represented as a onehot vector
-                if (eyeScript.hits[i].collider.transform.tag == "blue")
+                if (eyeScripts[e].hits[i].collider != null)
                 {
-                    sensor.AddOneHotObservation(0, 2);
-                } else if (eyeScript.hits[i].collider.transform.tag == "pink")
-                {
-                    sensor.AddOneHotObservation(1, 2);
-                } else {
-                    Debug.Log("Should never get here");
-                    sensor.AddObservation(new float[2] {0f, 0f}); //will need to control size but is empty 1 hot is intent
-                }
+                    // add normalized distance
+                    sensor.AddObservation(eyeScripts[e].hits[i].distance / eyeScripts[e].viewRadius);
 
-            } else {
-                // return values standing in for null
-                sensor.AddObservation(-1f);
-                sensor.AddObservation(new float[2] {0f, 0f}); //will need to control size but is empty 1 hot is intent
+                    // add colour being perceived
+                    // colour will be represented as a onehot vector
+                    if (eyeScripts[e].hits[i].collider.transform.tag == "blue")
+                    {
+                        sensor.AddOneHotObservation(0, 2);
+                    } else if (eyeScripts[e].hits[i].collider.transform.tag == "pink")
+                    {
+                        sensor.AddOneHotObservation(1, 2);
+                    } else {
+                        Debug.Log("Should never get here");
+                        sensor.AddObservation(new float[2] {-1f, -1f}); //will need to control size but is empty 1 hot is intent
+                    }
+
+                } else {
+                    // return values standing in for null
+                    sensor.AddObservation(-1f);
+                    sensor.AddObservation(new float[2] {-1f, -1f}); //will need to control size but is empty 1 hot is intent
+                }
             }
         }
 

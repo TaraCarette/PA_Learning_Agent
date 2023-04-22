@@ -89,19 +89,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 52
+    VectorObservationSize: 53
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 0400000002000000
-    VectorActionSize: 0400000002000000
+      BranchSizes: 050000000300000002000000
+    VectorActionSize: 050000000300000002000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 3
   m_BehaviorType: 0
-  m_BehaviorName: ColourNormRandomized
+  m_BehaviorName: StickyActions
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
@@ -137,8 +137,8 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
   bin: {fileID: 0}
-  eye: {fileID: 6885332723527397842}
   maxSpeed: 0.045
+  stickyPart: {fileID: 6885332723078064922}
 --- !u!1 &6885332723037555042
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,6 +322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e0cf1797627e2841888b8d8e09eb22f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stickyOn: 0
   touchingObj: []
 --- !u!58 &6885332723078064927
 CircleCollider2D:
@@ -552,11 +553,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c57d76acb8be124e825ee710ec852f0, type: 3}
---- !u!1 &6885332723527397842 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2315788924331129550, guid: 0c57d76acb8be124e825ee710ec852f0, type: 3}
-  m_PrefabInstance: {fileID: 9200511403871652636}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6885332723527397843 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2315788924331129551, guid: 0c57d76acb8be124e825ee710ec852f0, type: 3}

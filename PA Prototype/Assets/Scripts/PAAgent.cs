@@ -14,6 +14,9 @@ public class PAAgent : Agent
     [Tooltip("Found experimentally, not sure how to calculate normally")]
     public float maxSpeed;
 
+    public GameObject stickyPart;
+    private bool stickyTrue;
+
     private Vector3 startingSpot;
 
     private List <FieldOfView> eyeScripts;
@@ -24,7 +27,6 @@ public class PAAgent : Agent
     {
         // temporary drawing bin to reacts to agent as need dummy task
         goalRect = bin.GetComponent<ShapeInBin>().drawBinRect(bin.transform);
-
 
         // save starting spot so can randmize based around it as new episode begins
         startingSpot = transform.localPosition;
@@ -85,20 +87,26 @@ public class PAAgent : Agent
             }
         }
 
-        // will need to add if currently sticky or not
+        // track if currently sticky
+        sensor.AddObservation(stickyPart.GetComponent<StickyAgent>().stickyOn);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        // each action can do one of the choices or do nothing at all
         var move = actions.DiscreteActions[0]; // fix to be 4 separate later since diagonal should be option
         var rotate = actions.DiscreteActions[1];
+        var changeSticky = actions.DiscreteActions[2];
 
         // make the agent move and rotate as instructed
         GetComponent<Controller>().moveAgent(move);
         GetComponent<Controller>().rotateAgent(rotate);
 
         // later add turning sticky on and off
-
+        if (changeSticky == 1) 
+        {
+            stickyPart.GetComponent<StickyAgent>().changeStickyStatus();
+        }
 
 
         // punish getting stuck unmoving on walls

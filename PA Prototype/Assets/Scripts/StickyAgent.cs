@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class StickyAgent : MonoBehaviour
 {
-    private bool stickyOn;
+    [HideInInspector]
+    public bool stickyOn;
     private bool touching;
     SpriteRenderer sr;
     private Color currColour;
@@ -28,33 +29,7 @@ public class StickyAgent : MonoBehaviour
         // and update relationship to any other objects already touching as needed
         if (Input.GetKeyDown(KeyCode.S))
         {
-            stickyOn = !stickyOn;
-
-            if (stickyOn)
-            {
-                sr.color = Color.white;
-                // any touching objects should become child so moves together
-                foreach (Transform obj in touchingObj)
-                {
-                    if (obj != null) {
-                        obj.parent = transform;
-                    }
-                }
-            } else 
-            {
-                sr.color = currColour;
-                // the touching objects should no longer be children
-                foreach (Transform obj in touchingObj)
-                {
-                    // if deleted in other script will leave null behind
-                    if (obj != null) {
-                        obj.parent = null;
-                    }
-                }
-                // removing from list as will newly collide once no
-                // longer a child of the agent
-                touchingObj = new List<Transform>();
-            }
+            changeStickyStatus();
         }
 
     }
@@ -82,6 +57,37 @@ public class StickyAgent : MonoBehaviour
         // but still want to keep track of object
         if (!stickyOn) {
             touchingObj.Remove(other.transform);
+        }
+    }
+
+    public void changeStickyStatus()
+    {
+        stickyOn = !stickyOn;
+
+        if (stickyOn)
+        {
+            sr.color = Color.white;
+            // any touching objects should become child so moves together
+            foreach (Transform obj in touchingObj)
+            {
+                if (obj != null) {
+                    obj.parent = transform;
+                }
+            }
+        } else 
+        {
+            sr.color = currColour;
+            // the touching objects should no longer be children
+            foreach (Transform obj in touchingObj)
+            {
+                // if deleted in other script will leave null behind
+                if (obj != null) {
+                    obj.parent = null;
+                }
+            }
+            // removing from list as will newly collide once no
+            // longer a child of the agent
+            touchingObj = new List<Transform>();
         }
     }
 }

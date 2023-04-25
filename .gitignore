@@ -3,5 +3,7 @@ env/*
 
 # mlagents specifc
 results/
-# temp thing put on git once figure out env
-file.txt
+
+
+# until figure out which files I will change in package, do not put any on git
+ml-agents/

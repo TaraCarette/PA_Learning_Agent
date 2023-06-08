@@ -56,6 +56,9 @@ public class PAAgent : Agent
         // currently just did experiemntally, will want to calculate more formally for normalization
         sensor.AddObservation(GetComponent<Controller>().currSpeed / maxSpeed);
 
+        // flatlanders have sense of magentic field so know if north south etc
+        sensor.AddObservation(transform.rotation.z);
+
         // the information from the raycasts is observed
         for (int e = 0; e < eyeScripts.Count; e++)
         {

@@ -7,3 +7,4 @@ results/
 
 # until figure out which files I will change in package, do not put any on git
 ml-agents/
+!ml-agents/ml-agents/mlagents/trainers/torch_entities/components/reward_providers/curiosity_reward_provider.py

@@ -1,5 +1,6 @@
 import numpy as np
 import os
+from itertools import chain
 from typing import Dict, NamedTuple
 from mlagents.torch_utils import torch, default_device
 
@@ -36,9 +37,23 @@ class CuriosityRewardProvider(BaseRewardProvider):
         self._network = CuriosityNetwork(specs, settings)
         self._network.to(default_device())
 
-        self.optimizer = torch.optim.Adam(
-            self._network.parameters(), lr=settings.learning_rate
+
+        # we are separating out, optimizing 2 separate things while training
+        # forward is just curr state and action used to predict next state
+        forwardModelParams = self._network.forward_model_next_state_prediction.parameters()
+        self.optimizerForward = torch.optim.Adam(
+            forwardModelParams, lr=settings.learning_rate
         )
+
+        # not directly going to use inverse, only the feature encoder aspect will be saved
+        inverseModelParams = (chain(chain(self._network.inverse_model_action_encoding.parameters(),
+            self._network.newFeatureEncoder.parameters()),
+            self._network.discrete_action_prediction.parameters()))
+
+        self.optimizerInverse = torch.optim.Adam(
+            inverseModelParams, lr=settings.learning_rate
+        )
+
         self._has_updated_once = False
 
     def evaluate(self, mini_batch: AgentBuffer) -> np.ndarray:
@@ -53,12 +68,17 @@ class CuriosityRewardProvider(BaseRewardProvider):
         inverse_loss = self._network.compute_inverse_loss(mini_batch)
 
         # using both of them to calculate the gradient
-        loss = self.loss_multiplier * (
-            self.beta * forward_loss + (1.0 - self.beta) * inverse_loss
-        )
-        self.optimizer.zero_grad() # sets gradients to 0 to start so no weird carry over
-        loss.backward() # backpropagation
-        self.optimizer.step() # gradient descent
+        # loss = self.loss_multiplier * (
+        #     self.beta * forward_loss + (1.0 - self.beta) * inverse_loss
+        # )
+        self.optimizerForward.zero_grad() # sets gradients to 0 to start so no weird carry over
+        forward_loss.backward() # backpropagation
+        self.optimizerForward.step() # gradient descent
+
+        self.optimizerInverse.zero_grad() # sets gradients to 0 to start so no weird carry over
+        inverse_loss.backward() # backpropagation
+        self.optimizerInverse.step() # gradient descent
+
         return {
             "Losses/Curiosity Forward Loss": forward_loss.item(),
             "Losses/Curiosity Inverse Loss": inverse_loss.item(),
@@ -73,7 +93,6 @@ class CuriosityNetwork(torch.nn.Module):
 
     def __init__(self, specs: BehaviorSpec, settings: CuriositySettings) -> None:
         super().__init__()
-        print("should only show up once right?")
         self._action_spec = specs.action_spec
 
         state_encoder_settings = settings.network_settings
@@ -150,9 +169,9 @@ class CuriosityNetwork(torch.nn.Module):
             linear_layer(256, featureEncoderSize),
         )
 
-        print(self.inverse_model_action_encoding)
-        print(self.forward_model_next_state_prediction)
-        print(self.currFeatureEncoder)
+        # print(self.inverse_model_action_encoding)
+        # print(self.forward_model_next_state_prediction)
+        # print(self.currFeatureEncoder)
 
         
 
@@ -240,6 +259,7 @@ class CuriosityNetwork(torch.nn.Module):
             )
             branches = [torch.softmax(b, dim=1) for b in branches]
             discrete_pred = torch.cat(branches, dim=1)
+
         return ActionPredictionTuple(continuous_pred, discrete_pred)
 
     def predict_next_state(self, mini_batch: AgentBuffer) -> torch.Tensor:

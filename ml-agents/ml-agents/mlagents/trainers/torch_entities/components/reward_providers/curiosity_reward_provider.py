@@ -1,5 +1,4 @@
 import numpy as np
-import os
 from time import time
 from datetime import datetime
 from itertools import chain
@@ -12,7 +11,7 @@ from mlagents.trainers.torch_entities.components.reward_providers.base_reward_pr
 )
 from mlagents.trainers.settings import CuriositySettings
 
-from mlagents_envs.base_env import BehaviorSpec
+from mlagents_envs.base_env import BehaviorSpec, ObservationSpec
 from mlagents_envs import logging_util
 from mlagents.trainers.torch_entities.agent_action import AgentAction
 from mlagents.trainers.torch_entities.action_flattener import ActionFlattener
@@ -108,12 +107,12 @@ class CuriosityNetwork(torch.nn.Module):
         self.once = True
 
         # something to set for training higher levels, will use to automatically change code as needed
-        self.loadFeatureProcessor = False
+        self.loadFeatureProcessor = True
 
         # set to decide where saving feature encoder
         featureFolder = "C:\\users\\terra\\desktop\\thesis\\PA_Learning_Agent\\PA Prototype\\my_feature_models\\"
-        featureFileSave = "new"
-        featureFileLoad = "test0.pth"
+        featureFileSave = "test"
+        featureFileLoad = "new0609_14_12.pth"
 
 
         # get month/day and time to minute in order to make unique file names 
@@ -130,7 +129,9 @@ class CuriosityNetwork(torch.nn.Module):
             self.currFeatureEncoder = torch.load(featureFolder + featureFileLoad)
             # defining size features will be encoded as to define size of other networks
             featureEncoderSize = self.currFeatureEncoder._body_endoder.seq_layers[0].out_features
-
+            # changing in state encoder settings as well since if different from default now
+            obs = [ObservationSpec(shape=(featureEncoderSize,), dimension_property=(1,), observation_type=0,
+                name='VectorSensor_size' + str(featureEncoderSize))]
         else:
             # defining the path to save to, includes bit to help increment later
             self.featureSavePath = featureFolder + featureFileSave + timestamp + ".pth"
@@ -141,18 +142,20 @@ class CuriosityNetwork(torch.nn.Module):
 
             # the size of other networks is based on raw data when we don't load
             featureEncoderSize = 54 # hardcoded from unity editor
+            obs = specs.observation_specs
 
 
         # we create the network, but will not be using it, just recording it
         self.newFeatureEncoder = NetworkBody(
-            specs.observation_specs, state_encoder_settings
+            obs, state_encoder_settings
         )
 
 
         self._action_flattener = ActionFlattener(self._action_spec)
 
+        # inverse model will be taking in input from newly training feature
         self.inverse_model_action_encoding = torch.nn.Sequential(
-            LinearEncoder(2 * featureEncoderSize, 1, 256)
+            LinearEncoder(2 * state_encoder_settings.hidden_units, 1, 256)
         )
 
         if self._action_spec.continuous_size > 0:
@@ -164,6 +167,7 @@ class CuriosityNetwork(torch.nn.Module):
                 256, sum(self._action_spec.discrete_branches)
             )
 
+        # forward taking in input from only currently loaded feature model or none
         self.forward_model_next_state_prediction = torch.nn.Sequential(
             # can write this myself, check out class to help
             LinearEncoder( # fancy mlp
@@ -208,7 +212,7 @@ class CuriosityNetwork(torch.nn.Module):
 
     # these next get state functions, pull different mini batches from buffer
     # use those to get the required encoding
-    def get_current_state(self, mini_batch: AgentBuffer) -> torch.Tensor:
+    def get_current_state(self, mini_batch: AgentBuffer, trainingNewEncoder: bool) -> torch.Tensor:
         """
         Extracts the current state embedding from a mini_batch.
         """
@@ -219,17 +223,23 @@ class CuriosityNetwork(torch.nn.Module):
 
         np_obs = ObsUtil.from_buffer(mini_batch, n_obs)
         # Convert to tensors
+        # this list is the raw state
         tensor_obs = [ModelUtils.list_to_tensor(obs) for obs in np_obs]
 
-        # only go through processor to get state if specified
-        if self.loadFeatureProcessor:
+        # run through however many feature processors needed for current action
+        if self.loadFeatureProcessor and trainingNewEncoder:
+            preCurrState, _ = self.currFeatureEncoder.forward(tensor_obs)
+            currState, _ = self.newFeatureEncoder.forward([preCurrState])
+        elif self.loadFeatureProcessor:
             currState, _ = self.currFeatureEncoder.forward(tensor_obs)
+        elif trainingNewEncoder:
+            currState, _ = self.newFeatureEncoder.forward(tensor_obs)
         else:
             currState = tensor_obs[0]
-            
+
         return currState
 
-    def get_next_state(self, mini_batch: AgentBuffer) -> torch.Tensor:
+    def get_next_state(self, mini_batch: AgentBuffer, trainingNewEncoder: bool) -> torch.Tensor:
         """
         Extracts the next state embedding from a mini_batch.
         """
@@ -242,11 +252,17 @@ class CuriosityNetwork(torch.nn.Module):
         # Convert to tensors
         tensor_obs = [ModelUtils.list_to_tensor(obs) for obs in np_obs]
 
-        # only go through processor to get state if specified
-        if self.loadFeatureProcessor:
+        # run through however many feature processors needed for current action
+        if self.loadFeatureProcessor and trainingNewEncoder:
+            preCurrState, _ = self.currFeatureEncoder.forward(tensor_obs)
+            currState, _ = self.newFeatureEncoder.forward([preCurrState])
+        elif self.loadFeatureProcessor:
             currState, _ = self.currFeatureEncoder.forward(tensor_obs)
+        elif trainingNewEncoder:
+            currState, _ = self.newFeatureEncoder.forward(tensor_obs)
         else:
             currState = tensor_obs[0]
+
         return currState
 
     def predict_action(self, mini_batch: AgentBuffer) -> ActionPredictionTuple:
@@ -256,7 +272,8 @@ class CuriosityNetwork(torch.nn.Module):
         """
         inverse_model_input = torch.cat(
             # current with actual next state
-            (self.get_current_state(mini_batch), self.get_next_state(mini_batch)), dim=1
+            # this run is to train feature so always true
+            (self.get_current_state(mini_batch, True), self.get_next_state(mini_batch, True)), dim=1
         )
 
         continuous_pred = None
@@ -286,7 +303,8 @@ class CuriosityNetwork(torch.nn.Module):
         actions = AgentAction.from_buffer(mini_batch)
         flattened_action = self._action_flattener.forward(actions) # I can probably skip forward part?
         forward_model_input = torch.cat( # grabbing the st and the action, to feed into model
-            (self.get_current_state(mini_batch), flattened_action), dim=1
+            # false because not training new feature, just want current
+            (self.get_current_state(mini_batch, False), flattened_action), dim=1
         )
 
         # now that have input, call function with it, and output we return is prediction
@@ -345,7 +363,8 @@ class CuriosityNetwork(torch.nn.Module):
         """
         # get predicted next and actual next, compare to get reward
         predicted_next_state = self.predict_next_state(mini_batch)
-        target = self.get_next_state(mini_batch)
+        # this is just independent forward model, so not training new feature encoder so always false
+        target = self.get_next_state(mini_batch, False)
         sq_difference = 0.5 * (target - predicted_next_state) ** 2
         sq_difference = torch.sum(sq_difference, dim=1)
         return sq_difference

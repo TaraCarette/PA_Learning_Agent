@@ -1,5 +1,7 @@
 import numpy as np
 import os
+from time import time
+from datetime import datetime
 from itertools import chain
 from typing import Dict, NamedTuple
 from mlagents.torch_utils import torch, default_device
@@ -106,7 +108,7 @@ class CuriosityNetwork(torch.nn.Module):
         self.once = True
 
         # something to set for training higher levels, will use to automatically change code as needed
-        self.loadFeatureProcessor = True
+        self.loadFeatureProcessor = False
 
         # set to decide where saving feature encoder
         featureFolder = "C:\\users\\terra\\desktop\\thesis\\PA_Learning_Agent\\PA Prototype\\my_feature_models\\"
@@ -114,11 +116,16 @@ class CuriosityNetwork(torch.nn.Module):
         featureFileLoad = "test0.pth"
 
 
+        # get month/day and time to minute in order to make unique file names 
+        timestamp = datetime.fromtimestamp(time())
+        timestamp = timestamp.strftime("%m%d_%H_%M")
         # if needed, load the old feature encoder to be used
         if self.loadFeatureProcessor:
             # defining the path to save to, includes bit to help increment later
             # including data on what loaded data was used
-            self.featureSavePath = featureFolder + "Loaded_" + featureFileLoad.split(".")[0] + "_" + featureFileSave + "%s.pth"
+            self.featureSavePath = featureFolder + "Loaded_" + featureFileLoad.split(".")[0] + "_" + featureFileSave + timestamp + ".pth"
+            self.forwardSavePath = featureFolder + "Loaded_" + featureFileLoad.split(".")[0] + "_" + "Forward_" + featureFileSave + timestamp + ".pth"
+            self.inverseSavePath = featureFolder + "Loaded_" + featureFileLoad.split(".")[0] + "_" + "Inverse_" + featureFileSave + timestamp + ".pth"
 
             self.currFeatureEncoder = torch.load(featureFolder + featureFileLoad)
             # defining size features will be encoded as to define size of other networks
@@ -126,7 +133,9 @@ class CuriosityNetwork(torch.nn.Module):
 
         else:
             # defining the path to save to, includes bit to help increment later
-            self.featureSavePath = featureFolder + featureFileSave + "%s.pth"
+            self.featureSavePath = featureFolder + featureFileSave + timestamp + ".pth"
+            self.forwardSavePath = featureFolder + "Forward_" + featureFileSave + timestamp + ".pth"
+            self.inverseSavePath = featureFolder + "Inverse_" + featureFileSave + timestamp + ".pth"
 
             self.currFeatureEncoder = None
 
@@ -169,24 +178,30 @@ class CuriosityNetwork(torch.nn.Module):
             linear_layer(256, featureEncoderSize),
         )
 
-        # print(self.inverse_model_action_encoding)
-        # print(self.forward_model_next_state_prediction)
-        # print(self.currFeatureEncoder)
+        print("Currently used feature encoder")
+        print(self.currFeatureEncoder)
+        print("Feature encoder being trained at this level")
+        print(self.newFeatureEncoder)
+        print("The shape of the forward model")
+        print(self.forward_model_next_state_prediction)
+        print("The shape of the inverse model")
+        print(self.inverse_model_action_encoding)
 
         
 
 
 
     def __del__(self):
-        # make sure don't override old file
-        # will create a new file incremented number
-        i = 0
-        while os.path.exists(self.featureSavePath % i):
-            i += 1
-        path = self.featureSavePath.replace("%s", str(i))
+        print("Attempting to save file to " + self.featureSavePath)
+        torch.save(self.newFeatureEncoder, self.featureSavePath)
+        print("successfuly saved")
 
-        print("Attempting to save file to " + path)
-        torch.save(self.newFeatureEncoder, path)
+        print("Attempting to save file to " + self.forwardSavePath)
+        torch.save(self.forward_model_next_state_prediction, self.forwardSavePath)
+        print("successfuly saved")
+
+        print("Attempting to save file to " + self.inverseSavePath)
+        torch.save(self.inverse_model_action_encoding, self.inverseSavePath)
         print("successfuly saved")
 
 

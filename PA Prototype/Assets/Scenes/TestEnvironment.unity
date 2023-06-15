@@ -143,7 +143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &86425533
 Transform:
   m_ObjectHideFlags: 0
@@ -252,7 +252,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &227059570
 Transform:
   m_ObjectHideFlags: 0
@@ -346,7 +346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &256899335
 Transform:
   m_ObjectHideFlags: 0
@@ -1860,7 +1860,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1157399311
 Transform:
   m_ObjectHideFlags: 0
@@ -2216,7 +2216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1467448412
 Transform:
   m_ObjectHideFlags: 0
@@ -2497,6 +2497,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 724615937}
     m_Modifications:
+    - target: {fileID: 1452687105, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: MaxStep
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_Name
       value: Agent

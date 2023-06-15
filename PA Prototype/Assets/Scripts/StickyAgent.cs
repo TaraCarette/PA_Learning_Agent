@@ -27,10 +27,10 @@ public class StickyAgent : MonoBehaviour
     {
         // when change status, change outline to indicate
         // and update relationship to any other objects already touching as needed
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            changeStickyStatus();
-        }
+        // if (Input.GetKeyDown(KeyCode.S))
+        // {
+        //     changeStickyStatus();
+        // }
 
     }
 

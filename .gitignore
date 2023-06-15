@@ -5,7 +5,8 @@ env/*
 results/
 
 
-# until figure out which files I will change in package, do not put any on git
+# putting only changed file on git
+# this one changes how the rewards are given 
 ml-agents/*
 !ml-agents/
 ml-agents/ml-agents/*
@@ -21,3 +22,14 @@ ml-agents/ml-agents/mlagents/trainers/torch_entities/components/*
 ml-agents/ml-agents/mlagents/trainers/torch_entities/components/reward_providers/*
 !ml-agents/ml-agents/mlagents/trainers/torch_entities/components/reward_providers/
 !ml-agents/ml-agents/mlagents/trainers/torch_entities/components/reward_providers/curiosity_reward_provider.py
+
+# this just changes what information is printed
+ml-agents/*
+!ml-agents/
+ml-agents/ml-agents/*
+!ml-agents/ml-agents/
+ml-agents/ml-agents/mlagents/*
+!ml-agents/ml-agents/mlagents/
+ml-agents/ml-agents/mlagents/trainers/*
+!ml-agents/ml-agents/mlagents/trainers/
+!ml-agents/ml-agents/mlagents/trainers/stats.py

@@ -79,6 +79,7 @@ public class PAAgent : Agent
                         sensor.AddOneHotObservation(1, 2);
                     } else {
                         Debug.Log("Should never get here");
+                        Debug.Log(eyeScripts[e].hits[i].collider.transform.tag);
                         sensor.AddObservation(new float[2] {-1f, -1f}); //will need to control size but is empty 1 hot is intent
                     }
 

@@ -143,7 +143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &86425533
 Transform:
   m_ObjectHideFlags: 0
@@ -252,7 +252,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &227059570
 Transform:
   m_ObjectHideFlags: 0
@@ -346,7 +346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &256899335
 Transform:
   m_ObjectHideFlags: 0
@@ -593,6 +593,10 @@ PrefabInstance:
     - target: {fileID: 8334737242094059375, guid: 04c6a06209e6f7545a2b9197f710ff03, type: 3}
       propertyPath: m_Name
       value: World Boundaries
+      objectReference: {fileID: 0}
+    - target: {fileID: 8334737242094059375, guid: 04c6a06209e6f7545a2b9197f710ff03, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8334737243041765653, guid: 04c6a06209e6f7545a2b9197f710ff03, type: 3}
       propertyPath: m_LocalScale.x
@@ -1002,11 +1006,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1452687105, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: MaxStep
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_Name
       value: Agent
+      objectReference: {fileID: 0}
+    - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
@@ -1860,7 +1868,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1157399311
 Transform:
   m_ObjectHideFlags: 0
@@ -2216,7 +2224,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1467448412
 Transform:
   m_ObjectHideFlags: 0
@@ -2634,6 +2642,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Goal (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 5484411468160650419, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5484411468160650423, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -2763,6 +2775,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Goal (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5484411468160650419, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5484411468160650423, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -2829,6 +2845,10 @@ PrefabInstance:
     - target: {fileID: 5484411468160650419, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
       propertyPath: m_Name
       value: Goal
+      objectReference: {fileID: 0}
+    - target: {fileID: 5484411468160650419, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5484411468160650423, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
       propertyPath: m_RootOrder
@@ -2958,6 +2978,10 @@ PrefabInstance:
     - target: {fileID: 5484411468160650419, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
       propertyPath: m_Name
       value: Goal (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5484411468160650419, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5484411468160650423, guid: 4e54345e6229f92428ed1d7172219922, type: 3}
       propertyPath: m_RootOrder

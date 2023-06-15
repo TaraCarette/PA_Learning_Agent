@@ -7,9 +7,9 @@ using Unity.MLAgents.Sensors;
 
 public class PAAgent : Agent
 {
-    // bin and rect temporary while goal is to move agent into bin instead of actual goal
-    public GameObject bin;
-    private Rect goalRect;
+    // // bin and rect temporary while goal is to move agent into bin instead of actual goal
+    // public GameObject bin;
+    // private Rect goalRect;
 
     [Tooltip("Found experimentally, not sure how to calculate normally")]
     public float maxSpeed;
@@ -25,8 +25,8 @@ public class PAAgent : Agent
 
     public override void Initialize()
     {
-        // temporary drawing bin to reacts to agent as need dummy task
-        goalRect = bin.GetComponent<ShapeInBin>().drawBinRect(bin.transform);
+        // // temporary drawing bin to reacts to agent as need dummy task
+        // goalRect = bin.GetComponent<ShapeInBin>().drawBinRect(bin.transform);
 
         // save starting spot so can randmize based around it as new episode begins
         startingSpot = transform.localPosition;
@@ -74,7 +74,7 @@ public class PAAgent : Agent
                     if (eyeScripts[e].hits[i].collider.transform.tag == "blue")
                     {
                         sensor.AddOneHotObservation(0, 2);
-                    } else if (eyeScripts[e].hits[i].collider.transform.tag == "pink")
+                    } else if (eyeScripts[e].hits[i].collider.transform.tag == "purple")
                     {
                         sensor.AddOneHotObservation(1, 2);
                     } else {
@@ -112,22 +112,22 @@ public class PAAgent : Agent
         }
 
 
-        // punish getting stuck unmoving on walls
-        if (GetComponent<Controller>().currSpeed < 0.005)
-        {
-            AddReward(-0.1f);
-        }
-        // later turn this into more complex curiostity based exploration
-        // assigning basic reward of be in the goal thing
-        if (goalRect.Contains(transform.position))
-        {
-            AddReward(1f);
-            EndEpisode();
-        } else 
-        {
-            // punish for not reaching goal
-            AddReward(-0.01f);
-        }
+        // // punish getting stuck unmoving on walls
+        // if (GetComponent<Controller>().currSpeed < 0.005)
+        // {
+        //     AddReward(-0.1f);
+        // }
+        // // later turn this into more complex curiostity based exploration
+        // // assigning basic reward of be in the goal thing
+        // if (goalRect.Contains(transform.position))
+        // {
+        //     AddReward(1f);
+        //     EndEpisode();
+        // } else 
+        // {
+        //     // punish for not reaching goal
+        //     AddReward(-0.01f);
+        // }
 
     }
 

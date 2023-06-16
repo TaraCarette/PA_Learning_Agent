@@ -107,24 +107,21 @@ class CuriosityNetwork(torch.nn.Module):
         self.once = True
 
         # something to set for training higher levels, will use to automatically change code as needed
-        self.loadFeatureProcessor = True
+        self.loadFeatureProcessor = False
 
         # set to decide where saving feature encoder
-        featureFolder = "C:\\users\\terra\\desktop\\thesis\\PA_Learning_Agent\\PA Prototype\\my_feature_models\\"
+        featureFolder = "C:\\users\\terra\\desktop\\thesis\\PA_Learning_Agent\\my_feature_models\\"
         featureFileSave = "test"
-        featureFileLoad = "new0609_14_12.pth"
+        featureFileLoad = "new.pth"
 
 
-        # get month/day and time to minute in order to make unique file names 
-        timestamp = datetime.fromtimestamp(time())
-        timestamp = timestamp.strftime("%m%d_%H_%M")
         # if needed, load the old feature encoder to be used
         if self.loadFeatureProcessor:
             # defining the path to save to, includes bit to help increment later
             # including data on what loaded data was used
-            self.featureSavePath = featureFolder + "Loaded_" + featureFileLoad.split(".")[0] + "_" + featureFileSave + timestamp + ".pth"
-            self.forwardSavePath = featureFolder + "Loaded_" + featureFileLoad.split(".")[0] + "_" + "Forward_" + featureFileSave + timestamp + ".pth"
-            self.inverseSavePath = featureFolder + "Loaded_" + featureFileLoad.split(".")[0] + "_" + "Inverse_" + featureFileSave + timestamp + ".pth"
+            self.featureSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Feature_"
+            self.forwardSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Forward_"
+            self.inverseSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Inverse_"
 
             self.currFeatureEncoder = torch.load(featureFolder + featureFileLoad)
             # defining size features will be encoded as to define size of other networks
@@ -134,9 +131,9 @@ class CuriosityNetwork(torch.nn.Module):
                 name='VectorSensor_size' + str(featureEncoderSize))]
         else:
             # defining the path to save to, includes bit to help increment later
-            self.featureSavePath = featureFolder + featureFileSave + timestamp + ".pth"
-            self.forwardSavePath = featureFolder + "Forward_" + featureFileSave + timestamp + ".pth"
-            self.inverseSavePath = featureFolder + "Inverse_" + featureFileSave + timestamp + ".pth"
+            self.featureSavePath = featureFolder + featureFileSave + "_Feature_"
+            self.forwardSavePath = featureFolder + featureFileSave + "_Forward_" 
+            self.inverseSavePath = featureFolder + featureFileSave + "_Inverse_"
 
             self.currFeatureEncoder = None
 
@@ -196,6 +193,15 @@ class CuriosityNetwork(torch.nn.Module):
 
 
     def __del__(self):
+        # add on timestamp at time complete
+        # get month/day and time to minute in order to make unique file names 
+        timestamp = datetime.fromtimestamp(time())
+        timestamp = timestamp.strftime("%m%d_%H_%M")
+
+        self.featureSavePath = self.featureSavePath + timestamp + ".pth"
+        self.forwardSavePath = self.forwardSavePath + timestamp + ".pth"
+        self.inverseSavePath = self.inverseSavePath + timestamp + ".pth"
+
         print("Attempting to save file to " + self.featureSavePath)
         torch.save(self.newFeatureEncoder, self.featureSavePath)
         print("successfuly saved")

@@ -25,8 +25,8 @@ public class StickyAgent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // when change status, change outline to indicate
-        // and update relationship to any other objects already touching as needed
+        // // when change status, change outline to indicate
+        // // and update relationship to any other objects already touching as needed
         // if (Input.GetKeyDown(KeyCode.S))
         // {
         //     changeStickyStatus();

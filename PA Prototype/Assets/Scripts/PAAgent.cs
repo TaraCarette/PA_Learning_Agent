@@ -7,9 +7,9 @@ using Unity.MLAgents.Sensors;
 
 public class PAAgent : Agent
 {
-    // bin and rect temporary while goal is to move agent into bin instead of actual goal
+    // // bin and rect temporary while goal is to move agent into bin instead of actual goal
     // public GameObject bin;
-    private Rect goalRect;
+    // private Rect goalRect;
 
     [Tooltip("Found experimentally, not sure how to calculate normally")]
     public float maxSpeed;
@@ -25,7 +25,7 @@ public class PAAgent : Agent
 
     public override void Initialize()
     {
-        // temporary drawing bin to reacts to agent as need dummy task
+        // // temporary drawing bin to reacts to agent as need dummy task
         // goalRect = bin.GetComponent<ShapeInBin>().drawBinRect(bin.transform);
 
         // save starting spot so can randmize based around it as new episode begins
@@ -79,6 +79,7 @@ public class PAAgent : Agent
                         sensor.AddOneHotObservation(1, 2);
                     } else {
                         Debug.Log("Should never get here");
+                        Debug.Log(eyeScripts[e].hits[i].collider.transform.tag);
                         sensor.AddObservation(new float[2] {-1f, -1f}); //will need to control size but is empty 1 hot is intent
                     }
 
@@ -112,21 +113,21 @@ public class PAAgent : Agent
         }
 
 
-        // punish getting stuck unmoving on walls
+        // // punish getting stuck unmoving on walls
         // if (GetComponent<Controller>().currSpeed < 0.005)
         // {
         //     AddReward(-0.1f);
         // }
-        // later turn this into more complex curiostity based exploration
-        // assigning basic reward of be in the goal thing
+        // // later turn this into more complex curiostity based exploration
+        // // assigning basic reward of be in the goal thing
         // if (goalRect.Contains(transform.position))
         // {
         //     AddReward(1f);
         //     EndEpisode();
         // } else 
         // {
-        // punish for not reaching goal
-            // AddReward(-0.01f);
+        //     // punish for not reaching goal
+        //     AddReward(-0.01f);
         // }
 
     }

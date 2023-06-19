@@ -136,7 +136,6 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
-  bin: {fileID: 0}
   maxSpeed: 0.045
   stickyPart: {fileID: 6885332723078064922}
 --- !u!1 &6885332723037555042

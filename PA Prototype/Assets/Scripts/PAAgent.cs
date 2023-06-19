@@ -134,9 +134,9 @@ public class PAAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        // randomize starting position and rotation
-        transform.localPosition = new Vector3(Random.Range(startingSpot[0], startingSpot[0] + 4), Random.Range(startingSpot[1] - 4f, startingSpot[1] + 3f), startingSpot[2]);
-        transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+        // // randomize starting position and rotation
+        // transform.localPosition = new Vector3(Random.Range(startingSpot[0], startingSpot[0] + 4), Random.Range(startingSpot[1] - 4f, startingSpot[1] + 3f), startingSpot[2]);
+        // transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
     }
 
 

@@ -1,0 +1,65 @@
+{
+    "Tears": {
+        "checkpoints": [
+            {
+                "steps": 999936,
+                "file_path": "results\\plateau_test_lr0-003_1\\Tears\\Tears-999936.onnx",
+                "reward": null,
+                "creation_time": 1687258801.0811806,
+                "auxillary_file_paths": [
+                    "results\\plateau_test_lr0-003_1\\Tears\\Tears-999936.pt"
+                ]
+            },
+            {
+                "steps": 1499968,
+                "file_path": "results\\plateau_test_lr0-003_1\\Tears\\Tears-1499968.onnx",
+                "reward": null,
+                "creation_time": 1687259674.278031,
+                "auxillary_file_paths": [
+                    "results\\plateau_test_lr0-003_1\\Tears\\Tears-1499968.pt"
+                ]
+            },
+            {
+                "steps": 1999936,
+                "file_path": "results\\plateau_test_lr0-003_1\\Tears\\Tears-1999936.onnx",
+                "reward": null,
+                "creation_time": 1687260516.8505886,
+                "auxillary_file_paths": [
+                    "results\\plateau_test_lr0-003_1\\Tears\\Tears-1999936.pt"
+                ]
+            },
+            {
+                "steps": 2499968,
+                "file_path": "results\\plateau_test_lr0-003_1\\Tears\\Tears-2499968.onnx",
+                "reward": null,
+                "creation_time": 1687261376.4216278,
+                "auxillary_file_paths": [
+                    "results\\plateau_test_lr0-003_1\\Tears\\Tears-2499968.pt"
+                ]
+            },
+            {
+                "steps": 2500224,
+                "file_path": "results\\plateau_test_lr0-003_1\\Tears\\Tears-2500224.onnx",
+                "reward": null,
+                "creation_time": 1687261376.562568,
+                "auxillary_file_paths": [
+                    "results\\plateau_test_lr0-003_1\\Tears\\Tears-2500224.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 2500224,
+            "file_path": "results\\plateau_test_lr0-003_1\\Tears.onnx",
+            "reward": null,
+            "creation_time": 1687261376.562568,
+            "auxillary_file_paths": [
+                "results\\plateau_test_lr0-003_1\\Tears\\Tears-2500224.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

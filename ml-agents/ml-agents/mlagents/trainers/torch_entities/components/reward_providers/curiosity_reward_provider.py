@@ -46,27 +46,37 @@ class CuriosityRewardProvider(BaseRewardProvider):
             forwardModelParams, lr=settings.learning_rate
         )
 
+        # # not directly going to use inverse, only the feature encoder aspect will be saved
+        # inverseModelParams = (chain(chain(self._network.inverse_model_action_encoding.parameters(),
+        #     self._network.newFeatureEncoder.parameters()),
+        #     self._network.discrete_action_prediction.parameters()))
+
+        # self.optimizerInverse = torch.optim.Adam(
+        #     inverseModelParams, lr=settings.learning_rate
+        # )
+
         # not directly going to use inverse, only the feature encoder aspect will be saved
-        inverseModelParams = (chain(chain(self._network.inverse_model_action_encoding.parameters(),
+        futureModelParams = (chain(chain(self._network.future_forward_model.parameters(),
             self._network.newFeatureEncoder.parameters()),
             self._network.discrete_action_prediction.parameters()))
 
-        self.optimizerInverse = torch.optim.Adam(
-            inverseModelParams, lr=settings.learning_rate
+        self.optimizerFuture = torch.optim.Adam(
+            futureModelParams, lr=settings.learning_rate
         )
 
         self._has_updated_once = False
 
     def evaluate(self, mini_batch: AgentBuffer) -> np.ndarray:
         with torch.no_grad():
-            rewards = ModelUtils.to_numpy(self._network.compute_reward(mini_batch))
+            rewards = ModelUtils.to_numpy(self._network.compute_reward(mini_batch, True))
         rewards = np.minimum(rewards, 1.0 / self.strength)
         return rewards * self._has_updated_once
 
     def update(self, mini_batch: AgentBuffer) -> Dict[str, np.ndarray]:
         self._has_updated_once = True
-        forward_loss = self._network.compute_forward_loss(mini_batch)
-        inverse_loss = self._network.compute_inverse_loss(mini_batch)
+        forward_loss = self._network.compute_forward_loss(mini_batch, True)
+        # inverse_loss = self._network.compute_inverse_loss(mini_batch)
+        future_loss = self._network.compute_forward_loss(mini_batch, False)
 
         # using both of them to calculate the gradient
         # loss = self.loss_multiplier * (
@@ -76,13 +86,20 @@ class CuriosityRewardProvider(BaseRewardProvider):
         forward_loss.backward() # backpropagation
         self.optimizerForward.step() # gradient descent
 
-        self.optimizerInverse.zero_grad() # sets gradients to 0 to start so no weird carry over
-        inverse_loss.backward() # backpropagation
-        self.optimizerInverse.step() # gradient descent
+        # self.optimizerInverse.zero_grad() # sets gradients to 0 to start so no weird carry over
+        # inverse_loss.backward() # backpropagation
+        # self.optimizerInverse.step() # gradient descent
+        self.optimizerFuture.zero_grad() # sets gradients to 0 to start so no weird carry over
+        future_loss.backward() # backpropagation
+        self.optimizerFuture.step() # gradient descent
+
+        reward = torch.mean(self._network.compute_reward(mini_batch, True))
 
         return {
             "Losses/Curiosity Forward Loss": forward_loss.item(),
-            "Losses/Curiosity Inverse Loss": inverse_loss.item(),
+            # "Losses/Curiosity Inverse Loss": inverse_loss.item(),
+            "Losses/Curiosity Future Loss": future_loss.item(),
+            "Reward/Curiosity": reward.item()
         }
 
     def get_modules(self):
@@ -107,12 +124,12 @@ class CuriosityNetwork(torch.nn.Module):
         self.once = True
 
         # something to set for training higher levels, will use to automatically change code as needed
-        self.loadFeatureProcessor = False
+        self.loadFeatureProcessor = True
 
         # set to decide where saving feature encoder
         featureFolder = "C:\\users\\terra\\desktop\\thesis\\PA_Learning_Agent\\my_feature_models\\"
-        featureFileSave = "test"
-        featureFileLoad = "new.pth"
+        featureFileSave = "layer_future"
+        featureFileLoad = "layer_future_Feature_0627_19_09.pth"
 
 
         # if needed, load the old feature encoder to be used
@@ -121,7 +138,8 @@ class CuriosityNetwork(torch.nn.Module):
             # including data on what loaded data was used
             self.featureSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Feature_"
             self.forwardSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Forward_"
-            self.inverseSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Inverse_"
+            # self.inverseSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Inverse_"
+            self.futureSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Future_"
 
             self.currFeatureEncoder = torch.load(featureFolder + featureFileLoad)
             # defining size features will be encoded as to define size of other networks
@@ -133,7 +151,8 @@ class CuriosityNetwork(torch.nn.Module):
             # defining the path to save to, includes bit to help increment later
             self.featureSavePath = featureFolder + featureFileSave + "_Feature_"
             self.forwardSavePath = featureFolder + featureFileSave + "_Forward_" 
-            self.inverseSavePath = featureFolder + featureFileSave + "_Inverse_"
+            # self.inverseSavePath = featureFolder + featureFileSave + "_Inverse_"
+            self.futureSavePath = featureFolder + featureFileSave + "_Future_"
 
             self.currFeatureEncoder = None
 
@@ -150,10 +169,27 @@ class CuriosityNetwork(torch.nn.Module):
 
         self._action_flattener = ActionFlattener(self._action_spec)
 
-        # inverse model will be taking in input from newly training feature
-        self.inverse_model_action_encoding = torch.nn.Sequential(
-            LinearEncoder(2 * state_encoder_settings.hidden_units, 1, 256)
+        # # inverse model will be taking in input from newly training feature
+        # self.inverse_model_action_encoding = torch.nn.Sequential(
+        #     LinearEncoder(2 * state_encoder_settings.hidden_units, 1, 256)
+        # )
+
+
+        # forward taking in input from only currently loaded feature model or none
+        self.future_forward_model = torch.nn.Sequential(
+            # can write this myself, check out class to help
+            LinearEncoder( # fancy mlp
+                # normally returns sigmoid of data - kinda spits out 1 hot encoding?
+                state_encoder_settings.hidden_units
+                + self._action_flattener.flattened_size,
+                1,
+                256,
+            ),
+            # adding another layer as don't want output to be the swish
+            # recovers from reduction of swish?
+            linear_layer(256, state_encoder_settings.hidden_units),
         )
+
 
         if self._action_spec.continuous_size > 0:
             self.continuous_action_prediction = linear_layer(
@@ -185,8 +221,10 @@ class CuriosityNetwork(torch.nn.Module):
         print(self.newFeatureEncoder)
         print("The shape of the forward model")
         print(self.forward_model_next_state_prediction)
-        print("The shape of the inverse model")
-        print(self.inverse_model_action_encoding)
+        # print("The shape of the inverse model")
+        # print(self.inverse_model_action_encoding)
+        print("The shape of the future model")
+        print(self.future_forward_model)
 
         
 
@@ -200,7 +238,8 @@ class CuriosityNetwork(torch.nn.Module):
 
         self.featureSavePath = self.featureSavePath + timestamp + ".pth"
         self.forwardSavePath = self.forwardSavePath + timestamp + ".pth"
-        self.inverseSavePath = self.inverseSavePath + timestamp + ".pth"
+        # self.inverseSavePath = self.inverseSavePath + timestamp + ".pth"
+        self.futureSavePath = self.futureSavePath + timestamp + ".pth"
 
         print("Attempting to save file to " + self.featureSavePath)
         torch.save(self.newFeatureEncoder, self.featureSavePath)
@@ -210,8 +249,12 @@ class CuriosityNetwork(torch.nn.Module):
         torch.save(self.forward_model_next_state_prediction, self.forwardSavePath)
         print("successfuly saved")
 
-        print("Attempting to save file to " + self.inverseSavePath)
-        torch.save(self.inverse_model_action_encoding, self.inverseSavePath)
+        # print("Attempting to save file to " + self.inverseSavePath)
+        # torch.save(self.inverse_model_action_encoding, self.inverseSavePath)
+        # print("successfuly saved")
+
+        print("Attempting to save file to " + self.futureSavePath)
+        torch.save(self.future_forward_model, self.futureSavePath)
         print("successfuly saved")
 
 
@@ -300,22 +343,31 @@ class CuriosityNetwork(torch.nn.Module):
 
         return ActionPredictionTuple(continuous_pred, discrete_pred)
 
-    def predict_next_state(self, mini_batch: AgentBuffer) -> torch.Tensor:
+    def predict_next_state(self, mini_batch: AgentBuffer, on_current_model: bool) -> torch.Tensor:
         """
         Uses the current state embedding and the action of the mini_batch to predict
         the next state embedding.
         """
         # forward pass of predicting next state
         actions = AgentAction.from_buffer(mini_batch)
-        flattened_action = self._action_flattener.forward(actions) # I can probably skip forward part?
-        forward_model_input = torch.cat( # grabbing the st and the action, to feed into model
-            # false because not training new feature, just want current
-            (self.get_current_state(mini_batch, False), flattened_action), dim=1
-        )
+        flattened_action = self._action_flattener.forward(actions) 
+        if on_current_model:
+            forward_model_input = torch.cat( # grabbing the st and the action, to feed into model
+                # false because not training new feature, just want current
+                (self.get_current_state(mini_batch, False), flattened_action), dim=1
+            )
 
-        # now that have input, call function with it, and output we return is prediction
-        # that is the model I want, have notes above on how can recreate for myself
-        return self.forward_model_next_state_prediction(forward_model_input)
+            # now that have input, call function with it, and output we return is prediction
+            # that is the model I want, have notes above on how can recreate for myself
+            return self.forward_model_next_state_prediction(forward_model_input)
+        else:
+            forward_model_input = torch.cat( # grabbing the st and the action, to feed into model
+                # true because training new feature
+                (self.get_current_state(mini_batch, True), flattened_action), dim=1
+            )
+
+            return self.future_forward_model(forward_model_input)
+
 
     def compute_inverse_loss(self, mini_batch: AgentBuffer) -> torch.Tensor:
         """
@@ -362,20 +414,26 @@ class CuriosityNetwork(torch.nn.Module):
             )
         return _inverse_loss
 
-    def compute_reward(self, mini_batch: AgentBuffer) -> torch.Tensor:
+    def compute_reward(self, mini_batch: AgentBuffer, on_current_model: bool) -> torch.Tensor:
         """
         Calculates the curiosity reward for the mini_batch. Corresponds to the error
         between the predicted and actual next state.
         """
         # get predicted next and actual next, compare to get reward
-        predicted_next_state = self.predict_next_state(mini_batch)
-        # this is just independent forward model, so not training new feature encoder so always false
-        target = self.get_next_state(mini_batch, False)
+        if on_current_model:
+            predicted_next_state = self.predict_next_state(mini_batch, True)
+            # this is just independent forward model, so not training new feature encoder so always false
+            target = self.get_next_state(mini_batch, False)
+        else:
+            predicted_next_state = self.predict_next_state(mini_batch, False)
+            # training new feature encoder so true
+            target = self.get_next_state(mini_batch, True)
+
         sq_difference = 0.5 * (target - predicted_next_state) ** 2
         sq_difference = torch.sum(sq_difference, dim=1)
         return sq_difference
 
-    def compute_forward_loss(self, mini_batch: AgentBuffer) -> torch.Tensor:
+    def compute_forward_loss(self, mini_batch: AgentBuffer, on_current_model: bool) -> torch.Tensor:
         """
         Computes the loss for the next state prediction
         """
@@ -383,7 +441,7 @@ class CuriosityNetwork(torch.nn.Module):
         # can calculate this anyways I want
         return torch.mean(
             ModelUtils.dynamic_partition(
-                self.compute_reward(mini_batch),
+                self.compute_reward(mini_batch, on_current_model),
                 ModelUtils.list_to_tensor(
                     mini_batch[BufferKey.MASKS], dtype=torch.float
                 ),

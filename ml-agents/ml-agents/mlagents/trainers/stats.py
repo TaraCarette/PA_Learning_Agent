@@ -207,9 +207,17 @@ class ConsoleWriter(StatsWriter):
             stats_summary = values["Losses/Curiosity Inverse Loss"]
             log_info.append(f"Mean Inverse Loss: {stats_summary.mean:0.3f}")
 
+        if "Losses/Curiosity Future Loss" in values:
+            stats_summary = values["Losses/Curiosity Future Loss"]
+            log_info.append(f"Mean Future Loss: {stats_summary.mean:0.5f}")
+
         if "Losses/Policy Loss" in values:
             stats_summary = values["Losses/Policy Loss"]
             log_info.append(f"Mean Policy Loss: {stats_summary.mean:0.3f}")
+
+        if "Reward/Curiosity" in values:
+            stats_summary = values["Reward/Curiosity"]
+            log_info.append(f"Curiosity Reward: {stats_summary.mean:0.3f}")
 
 
 

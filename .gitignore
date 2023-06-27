@@ -2,7 +2,7 @@ env/*
 
 
 # mlagents specifc
-results/
+PA Prototype/Assets/ML-Agents/
 
 
 # putting only changed file on git

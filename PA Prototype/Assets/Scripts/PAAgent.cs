@@ -25,6 +25,8 @@ public class PAAgent : Agent
     private StatsRecorder actRecorder;
     private bool wallTouching;
     private bool objectTouching;
+    private Transform body;
+    private int defaultChildCount;
 
 
     public override void Initialize()
@@ -55,6 +57,11 @@ public class PAAgent : Agent
 
         // intialize the stat recorder
         actRecorder = Academy.Instance.StatsRecorder;
+
+        // get the part of the agent that the objects stick to
+        body = transform.GetChild(0);
+        // count children for normal part of body
+        defaultChildCount = body.transform.childCount;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -240,6 +247,24 @@ public class PAAgent : Agent
         // record roughly where agent is relative to teh starting spot
         actRecorder.Add("Location/X", transform.localPosition.x - startingSpot[0]);
         actRecorder.Add("Location/Y", transform.localPosition.y - startingSpot[1]);
+
+        // record when attached to objects
+        if (body.transform.childCount - defaultChildCount == 1)
+        {
+            actRecorder.Add("Sticky/One Attached", 1);
+            actRecorder.Add("Sticky/Multiple Attached", 0);
+            actRecorder.Add("Sticky/None Attached", 0);
+        } else if (body.transform.childCount - defaultChildCount > 1)
+        {
+            actRecorder.Add("Sticky/Multiple Attached", 1);
+            actRecorder.Add("Sticky/One Attached", 0);
+            actRecorder.Add("Sticky/None Attached", 0);
+        } else 
+        {
+            actRecorder.Add("Sticky/None Attached", 1);
+            actRecorder.Add("Sticky/One Attached", 0);
+            actRecorder.Add("Sticky/Multiple Attached", 0);
+        }
 
 
         // // punish getting stuck unmoving on walls

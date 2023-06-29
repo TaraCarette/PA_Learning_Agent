@@ -704,6 +704,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Agent
       objectReference: {fileID: 0}
+    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: rayPer10Degree
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -931,6 +935,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Agent
       objectReference: {fileID: 0}
+    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: rayPer10Degree
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1015,6 +1023,10 @@ PrefabInstance:
     - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: rayPer10Degree
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
@@ -1630,6 +1642,10 @@ PrefabInstance:
     - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_Name
       value: Agent
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: rayPer10Degree
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
@@ -2513,6 +2529,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Agent
       objectReference: {fileID: 0}
+    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: rayPer10Degree
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -2717,6 +2737,10 @@ PrefabInstance:
     - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_Name
       value: Agent
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: rayPer10Degree
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder

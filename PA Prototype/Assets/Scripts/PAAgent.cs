@@ -22,6 +22,10 @@ public class PAAgent : Agent
     private List <FieldOfView> eyeScripts;
     private List <int> rays;
 
+    private StatsRecorder actRecorder;
+    private bool wallTouching;
+    private bool objectTouching;
+
 
     public override void Initialize()
     {
@@ -48,6 +52,9 @@ public class PAAgent : Agent
                 eyeCount++;
             }
         }
+
+        // intialize the stat recorder
+        actRecorder = Academy.Instance.StatsRecorder;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -93,6 +100,31 @@ public class PAAgent : Agent
 
         // track if currently sticky
         sensor.AddObservation(stickyPart.GetComponent<StickyAgent>().stickyOn);
+
+        // check if touching anything else
+        sensor.AddObservation(wallTouching || objectTouching);
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        // 6 is the unmoveable layer, so it contains walls
+        if (other.gameObject.layer == 6)
+        {
+            wallTouching = true;
+        } else {
+            objectTouching = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D other)
+    {
+        // 6 is the unmoveable layer, so it contains walls
+        if (other.gameObject.layer == 6)
+        {
+            wallTouching = false;
+        } else {
+            objectTouching = false;
+        }
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -111,6 +143,103 @@ public class PAAgent : Agent
         {
             stickyPart.GetComponent<StickyAgent>().changeStickyStatus();
         }
+
+        // record the different movements
+        if (move == 0)
+        {
+            actRecorder.Add("Move/Up", 1);
+            actRecorder.Add("Move/Down", 0);
+            actRecorder.Add("Move/Left", 0);
+            actRecorder.Add("Move/Right", 0);
+            actRecorder.Add("Move/None", 0);
+        }
+        else if (move == 1)
+        {
+            actRecorder.Add("Move/Down", 1);
+            actRecorder.Add("Move/Up", 0);
+            actRecorder.Add("Move/Left", 0);
+            actRecorder.Add("Move/Right", 0);
+            actRecorder.Add("Move/None", 0);
+        }
+        else if (move == 2)
+        {
+            actRecorder.Add("Move/Left", 1);
+            actRecorder.Add("Move/Up", 0);
+            actRecorder.Add("Move/Down", 0);
+            actRecorder.Add("Move/Right", 0);
+            actRecorder.Add("Move/None", 0);
+        }
+        else if (move == 3)
+        {
+            actRecorder.Add("Move/Right", 1);
+            actRecorder.Add("Move/Up", 0);
+            actRecorder.Add("Move/Down", 0);
+            actRecorder.Add("Move/Left", 0);
+            actRecorder.Add("Move/None", 0);
+        }
+        else if (move == 4)
+        {
+            actRecorder.Add("Move/None", 1);
+            actRecorder.Add("Move/Up", 0);
+            actRecorder.Add("Move/Down", 0);
+            actRecorder.Add("Move/Left", 0);
+            actRecorder.Add("Move/Right", 0);
+        }
+
+
+
+        // record the different rotations
+        if (rotate == 0)
+        {
+            actRecorder.Add("Rotate/Left", 1);
+            actRecorder.Add("Rotate/Right", 0);
+            actRecorder.Add("Rotate/None", 0);
+        }
+        else if (rotate == 1)
+        {
+            actRecorder.Add("Rotate/Right", 1);
+            actRecorder.Add("Rotate/Left", 0);
+            actRecorder.Add("Rotate/None", 0);
+        }
+        else if (rotate == 2)
+        {
+            actRecorder.Add("Rotate/None", 1);
+            actRecorder.Add("Rotate/Left", 0);
+            actRecorder.Add("Rotate/Right", 0);
+        }
+
+        // record sticky
+        if (changeSticky == 0) 
+        {
+            actRecorder.Add("Sticky/No Change", 1);
+            actRecorder.Add("Sticky/Change", 0);
+        }
+        else if (changeSticky == 1)
+        {
+            actRecorder.Add("Sticky/Change", 1);
+            actRecorder.Add("Sticky/No Change", 0);
+        }
+
+
+        // record what it is touching
+        if (wallTouching)
+        {
+            actRecorder.Add("Touch/Wall", 1);
+        } else {
+            actRecorder.Add("Touch/Wall", 0);
+        }
+
+        if (objectTouching)
+        {
+            actRecorder.Add("Touch/Object", 1);
+        } else {
+            actRecorder.Add("Touch/Object", 0);
+        }
+
+
+        // record roughly where agent is relative to teh starting spot
+        actRecorder.Add("Location/X", transform.localPosition.x - startingSpot[0]);
+        actRecorder.Add("Location/Y", transform.localPosition.y - startingSpot[1]);
 
 
         // // punish getting stuck unmoving on walls

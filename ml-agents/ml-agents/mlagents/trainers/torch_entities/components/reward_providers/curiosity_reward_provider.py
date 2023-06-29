@@ -93,13 +93,13 @@ class CuriosityRewardProvider(BaseRewardProvider):
         future_loss.backward() # backpropagation
         self.optimizerFuture.step() # gradient descent
 
-        reward = torch.mean(self._network.compute_reward(mini_batch, True))
+        # reward = torch.mean(self._network.compute_reward(mini_batch, True))
 
         return {
             "Losses/Curiosity Forward Loss": forward_loss.item(),
             # "Losses/Curiosity Inverse Loss": inverse_loss.item(),
             "Losses/Curiosity Future Loss": future_loss.item(),
-            "Reward/Curiosity": reward.item()
+            # "Reward/Curiosity": reward.item()
         }
 
     def get_modules(self):
@@ -124,11 +124,11 @@ class CuriosityNetwork(torch.nn.Module):
         self.once = True
 
         # something to set for training higher levels, will use to automatically change code as needed
-        self.loadFeatureProcessor = True
+        self.loadFeatureProcessor = False
 
         # set to decide where saving feature encoder
         featureFolder = "C:\\users\\terra\\desktop\\thesis\\PA_Learning_Agent\\my_feature_models\\"
-        featureFileSave = "layer_future"
+        featureFileSave = "run"
         featureFileLoad = "layer_future_Feature_0627_19_09.pth"
 
 
@@ -157,7 +157,7 @@ class CuriosityNetwork(torch.nn.Module):
             self.currFeatureEncoder = None
 
             # the size of other networks is based on raw data when we don't load
-            featureEncoderSize = 54 # hardcoded from unity editor
+            featureEncoderSize = 55 # hardcoded from unity editor
             obs = specs.observation_specs
 
 

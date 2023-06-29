@@ -1,0 +1,56 @@
+{
+    "Tears": {
+        "checkpoints": [
+            {
+                "steps": 499968,
+                "file_path": "results\\run_2\\Tears\\Tears-499968.onnx",
+                "reward": null,
+                "creation_time": 1688057796.2789986,
+                "auxillary_file_paths": [
+                    "results\\run_2\\Tears\\Tears-499968.pt"
+                ]
+            },
+            {
+                "steps": 999936,
+                "file_path": "results\\run_2\\Tears\\Tears-999936.onnx",
+                "reward": null,
+                "creation_time": 1688060082.8707044,
+                "auxillary_file_paths": [
+                    "results\\run_2\\Tears\\Tears-999936.pt"
+                ]
+            },
+            {
+                "steps": 1499968,
+                "file_path": "results\\run_2\\Tears\\Tears-1499968.onnx",
+                "reward": null,
+                "creation_time": 1688062109.9089828,
+                "auxillary_file_paths": [
+                    "results\\run_2\\Tears\\Tears-1499968.pt"
+                ]
+            },
+            {
+                "steps": 1500288,
+                "file_path": "results\\run_2\\Tears\\Tears-1500288.onnx",
+                "reward": null,
+                "creation_time": 1688062110.1270802,
+                "auxillary_file_paths": [
+                    "results\\run_2\\Tears\\Tears-1500288.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 1500288,
+            "file_path": "results\\run_2\\Tears.onnx",
+            "reward": null,
+            "creation_time": 1688062110.1270802,
+            "auxillary_file_paths": [
+                "results\\run_2\\Tears\\Tears-1500288.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

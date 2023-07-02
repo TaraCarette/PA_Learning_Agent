@@ -1,0 +1,47 @@
+{
+    "Tears": {
+        "checkpoints": [
+            {
+                "steps": 499968,
+                "file_path": "results\\run_wide_loaded_1\\Tears\\Tears-499968.onnx",
+                "reward": null,
+                "creation_time": 1688296930.1042032,
+                "auxillary_file_paths": [
+                    "results\\run_wide_loaded_1\\Tears\\Tears-499968.pt"
+                ]
+            },
+            {
+                "steps": 999936,
+                "file_path": "results\\run_wide_loaded_1\\Tears\\Tears-999936.onnx",
+                "reward": null,
+                "creation_time": 1688300682.4908497,
+                "auxillary_file_paths": [
+                    "results\\run_wide_loaded_1\\Tears\\Tears-999936.pt"
+                ]
+            },
+            {
+                "steps": 1000320,
+                "file_path": "results\\run_wide_loaded_1\\Tears\\Tears-1000320.onnx",
+                "reward": null,
+                "creation_time": 1688300682.9361188,
+                "auxillary_file_paths": [
+                    "results\\run_wide_loaded_1\\Tears\\Tears-1000320.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 1000320,
+            "file_path": "results\\run_wide_loaded_1\\Tears.onnx",
+            "reward": null,
+            "creation_time": 1688300682.9361188,
+            "auxillary_file_paths": [
+                "results\\run_wide_loaded_1\\Tears\\Tears-1000320.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

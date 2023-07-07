@@ -103,7 +103,7 @@ class CuriosityNetwork(torch.nn.Module):
         self.loadFeatureProcessor = False
 
         # set to decide where saving feature encoder
-        featureFolder = "C:\\users\\terra\\desktop\\thesis\\PA_Learning_Agent\\my_feature_models\\"
+        featureFolder = "C:\\users\\terra\\desktop\\thesis\\PA_Learning_Agent\\my_feature_models\\layer3\\"
         featureFileSave = "run_wide_2"
         featureFileLoad = "run_wide_2_Feature_0629_22_27.pth"
 
@@ -114,7 +114,6 @@ class CuriosityNetwork(torch.nn.Module):
             # including data on what loaded data was used
             self.featureSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Feature_"
             self.forwardSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Forward_"
-            # self.inverseSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Inverse_"
             self.futureSavePath = featureFolder + featureFileSave + "_Loaded_" + featureFileLoad.split(".")[0] + "_" + "Future_"
 
             self.currFeatureEncoder = torch.load(featureFolder + featureFileLoad)
@@ -135,6 +134,26 @@ class CuriosityNetwork(torch.nn.Module):
             # the size of other networks is based on raw data when we don't load
             featureEncoderSize = 178 # hardcoded from unity editor
             obs = specs.observation_specs
+
+
+        # # am doing a third layer, so need to change the feature detector to be double layered
+        # self.featureSavePath = featureFolder + "layer3_2feature"
+        # self.forwardSavePath = featureFolder + "layer3_2forward"
+        # self.futureSavePath = featureFolder + "layer3_2future"
+        # featureFileLoad2 = "run_wide_2_Loaded_run_wide_2_Feature_0629_22_27_Feature_0702_15_38.pth"
+
+        # fEncoder1 = torch.load(featureFolder + featureFileLoad)
+        # fEncoder2 = torch.load(featureFolder + featureFileLoad2)
+
+        # self.currFeatureEncoder = torch.nn.Sequential(
+        #     fEncoder1, fEncoder2)
+
+
+        featureEncoderSize = 20 # just hardcoding
+        # changing in state encoder settings as well since if different from default now
+        obs = [ObservationSpec(shape=(featureEncoderSize,), dimension_property=(1,), observation_type=0,
+            name='VectorSensor_size' + str(featureEncoderSize))]
+
 
 
         # we create the network, but will not be using it, just recording it
@@ -229,7 +248,7 @@ class CuriosityNetwork(torch.nn.Module):
         Extracts the current state embedding from a mini_batch.
         """
         if self.loadFeatureProcessor:
-            n_obs = len(self.currFeatureEncoder.processors)
+            n_obs = 1#len(self.currFeatureEncoder.processors)
         else:
             n_obs = 1 # I think this works but might need to check
 
@@ -256,7 +275,7 @@ class CuriosityNetwork(torch.nn.Module):
         Extracts the next state embedding from a mini_batch.
         """
         if self.loadFeatureProcessor:
-            n_obs = len(self.currFeatureEncoder.processors)
+            n_obs = 1# len(self.currFeatureEncoder.processors)
         else:
             n_obs = 1 # I think this works but might need to check
 

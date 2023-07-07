@@ -3,6 +3,10 @@ import tensorboard as tb
 
 # this script generates graphs containing a selected value and puts different runs of that value on the same graph
 
+# runs = [['layer3\\Tears', 'layer3_2\\Tears']]
+# title = ['Wide Agent Layer 3 Forward Loss']
+# statType = "Losses/Curiosity Forward Loss"
+
 runs = [['run_loaded_1\\Tears', 'run_loaded_2\\Tears'], ['run_sparse_loaded_1\\Tears', 'run_sparse_loaded_2\\Tears'], ['run_wide_loaded_1\\Tears', 'run_wide_loaded_2\\Tears']]
 # runs = [['run_1\\Tears', 'run_2\\Tears'], ['run_sparse_1\\Tears', 'run_sparse_2\\Tears'], ['run_wide_1\\Tears', 'run_wide_2\\Tears']]
 title = ["Default Agent Layer 2 Future Loss", "Sparse Agent Layer 2 Future Loss", "Wide Agent Layer 2 Future Loss"]
@@ -37,7 +41,7 @@ ylabel = "Loss"
 #  'run_wide_loaded_1\\Tears' 'run_wide_loaded_2\\Tears' 'test\\Tears']
 
 # loading the data from the created tensorboard experiemnt
-experiment_id = "whndVLarTZqgJmvEVCXNLg"
+experiment_id = "fLceZyeAR4qjrxoy5yCNnw"
 experiment = tb.data.experimental.ExperimentFromDev(experiment_id)
 df = experiment.get_scalars()
 

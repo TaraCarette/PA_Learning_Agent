@@ -704,10 +704,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Agent
       objectReference: {fileID: 0}
-    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
-      propertyPath: rayPer10Degree
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -935,10 +931,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Agent
       objectReference: {fileID: 0}
-    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
-      propertyPath: rayPer10Degree
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1023,10 +1015,6 @@ PrefabInstance:
     - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
-      propertyPath: rayPer10Degree
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
@@ -1642,10 +1630,6 @@ PrefabInstance:
     - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_Name
       value: Agent
-      objectReference: {fileID: 0}
-    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
-      propertyPath: rayPer10Degree
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder
@@ -2522,16 +2506,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 724615937}
     m_Modifications:
     - target: {fileID: 1452687105, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
-      propertyPath: MaxStep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1452687105, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_Name
       value: Agent
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: viewAngle
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: rayPer10Degree
@@ -2580,6 +2564,14 @@ PrefabInstance:
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9200511404781897755, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9200511404781897756, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
+      propertyPath: viewAngle
+      value: 140
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
@@ -2741,10 +2733,6 @@ PrefabInstance:
     - target: {fileID: 2729735969358740954, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_Name
       value: Agent
-      objectReference: {fileID: 0}
-    - target: {fileID: 6885332723527397845, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
-      propertyPath: rayPer10Degree
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8377110629241309720, guid: b19b231a9ff33374d8dc7e444b0fc112, type: 3}
       propertyPath: m_RootOrder

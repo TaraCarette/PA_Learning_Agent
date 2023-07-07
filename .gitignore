@@ -1,8 +1,9 @@
 env/*
 
 
-# mlagents specifc
-PA Prototype/Assets/ML-Agents/
+# mlagents is specific package that needs to not be tracked within Unity set up
+# and is not part of default unity gitignore
+PA Prototype/Assets/ML-Agents/*
 
 
 # putting only changed file on git

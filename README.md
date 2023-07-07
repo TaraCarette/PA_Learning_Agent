@@ -45,7 +45,7 @@ To change what statistics are printed out as you are running, change the `ml-age
 To change how the PA learning system is being implemented, change the `ml-agents/ml-agents/mlagents/trainers/torch_entities/components/reward_providers/curiosity_reward_provider.py` file. This file will also need to be changed if you want to load a feature detector from another layer.
 
 ### Data
-There is different types of data saved to this repository.
+There are different types of data saved to this repository.
 
 #### results
 In the results folder are folders containing a variety of information about a run. It has the configuration file for that data run, the statistics gathered during that run, and the trained behaviour brain. If you run:
@@ -58,6 +58,3 @@ You can see graphically all of the data stored by each run.
 #### my_feature_models
 This is where the models created by the PA learning mechanism gets saved. Each run saves the feature detector it was training to be used by the next layer, the current forward model, and the future model, the forward model used to train the feature detector.
 
-
-#### graphs
-This is where all the generated graphs are stored. It mostly only contains graphs from the final used data runs, and not graphs from the pre-testing stages.

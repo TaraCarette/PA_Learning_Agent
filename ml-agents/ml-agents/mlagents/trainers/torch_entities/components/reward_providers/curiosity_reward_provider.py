@@ -46,15 +46,6 @@ class CuriosityRewardProvider(BaseRewardProvider):
             forwardModelParams, lr=settings.learning_rate
         )
 
-        # # not directly going to use inverse, only the feature encoder aspect will be saved
-        # inverseModelParams = (chain(chain(self._network.inverse_model_action_encoding.parameters(),
-        #     self._network.newFeatureEncoder.parameters()),
-        #     self._network.discrete_action_prediction.parameters()))
-
-        # self.optimizerInverse = torch.optim.Adam(
-        #     inverseModelParams, lr=settings.learning_rate
-        # )
-
         # not directly going to use inverse, only the feature encoder aspect will be saved
         futureModelParams = (chain(chain(self._network.future_forward_model.parameters(),
             self._network.newFeatureEncoder.parameters()),
@@ -75,31 +66,19 @@ class CuriosityRewardProvider(BaseRewardProvider):
     def update(self, mini_batch: AgentBuffer) -> Dict[str, np.ndarray]:
         self._has_updated_once = True
         forward_loss = self._network.compute_forward_loss(mini_batch, True)
-        # inverse_loss = self._network.compute_inverse_loss(mini_batch)
         future_loss = self._network.compute_forward_loss(mini_batch, False)
 
-        # using both of them to calculate the gradient
-        # loss = self.loss_multiplier * (
-        #     self.beta * forward_loss + (1.0 - self.beta) * inverse_loss
-        # )
         self.optimizerForward.zero_grad() # sets gradients to 0 to start so no weird carry over
         forward_loss.backward() # backpropagation
         self.optimizerForward.step() # gradient descent
 
-        # self.optimizerInverse.zero_grad() # sets gradients to 0 to start so no weird carry over
-        # inverse_loss.backward() # backpropagation
-        # self.optimizerInverse.step() # gradient descent
         self.optimizerFuture.zero_grad() # sets gradients to 0 to start so no weird carry over
         future_loss.backward() # backpropagation
         self.optimizerFuture.step() # gradient descent
 
-        # reward = torch.mean(self._network.compute_reward(mini_batch, True))
-
         return {
             "Losses/Curiosity Forward Loss": forward_loss.item(),
-            # "Losses/Curiosity Inverse Loss": inverse_loss.item(),
             "Losses/Curiosity Future Loss": future_loss.item(),
-            # "Reward/Curiosity": reward.item()
         }
 
     def get_modules(self):
@@ -120,16 +99,13 @@ class CuriosityNetwork(torch.nn.Module):
                 "memory was specified in network_settings but is not supported by Curiosity. It is being ignored."
             )
 
-        # using to print stuff more easily
-        self.once = True
-
         # something to set for training higher levels, will use to automatically change code as needed
         self.loadFeatureProcessor = False
 
         # set to decide where saving feature encoder
         featureFolder = "C:\\users\\terra\\desktop\\thesis\\PA_Learning_Agent\\my_feature_models\\"
-        featureFileSave = "run"
-        featureFileLoad = "layer_future_Feature_0627_19_09.pth"
+        featureFileSave = "run_wide_2"
+        featureFileLoad = "run_wide_2_Feature_0629_22_27.pth"
 
 
         # if needed, load the old feature encoder to be used
@@ -157,7 +133,7 @@ class CuriosityNetwork(torch.nn.Module):
             self.currFeatureEncoder = None
 
             # the size of other networks is based on raw data when we don't load
-            featureEncoderSize = 55 # hardcoded from unity editor
+            featureEncoderSize = 178 # hardcoded from unity editor
             obs = specs.observation_specs
 
 
@@ -168,11 +144,6 @@ class CuriosityNetwork(torch.nn.Module):
 
 
         self._action_flattener = ActionFlattener(self._action_spec)
-
-        # # inverse model will be taking in input from newly training feature
-        # self.inverse_model_action_encoding = torch.nn.Sequential(
-        #     LinearEncoder(2 * state_encoder_settings.hidden_units, 1, 256)
-        # )
 
 
         # forward taking in input from only currently loaded feature model or none
@@ -221,14 +192,10 @@ class CuriosityNetwork(torch.nn.Module):
         print(self.newFeatureEncoder)
         print("The shape of the forward model")
         print(self.forward_model_next_state_prediction)
-        # print("The shape of the inverse model")
-        # print(self.inverse_model_action_encoding)
         print("The shape of the future model")
         print(self.future_forward_model)
 
         
-
-
 
     def __del__(self):
         # add on timestamp at time complete
@@ -248,10 +215,6 @@ class CuriosityNetwork(torch.nn.Module):
         print("Attempting to save file to " + self.forwardSavePath)
         torch.save(self.forward_model_next_state_prediction, self.forwardSavePath)
         print("successfuly saved")
-
-        # print("Attempting to save file to " + self.inverseSavePath)
-        # torch.save(self.inverse_model_action_encoding, self.inverseSavePath)
-        # print("successfuly saved")
 
         print("Attempting to save file to " + self.futureSavePath)
         torch.save(self.future_forward_model, self.futureSavePath)
